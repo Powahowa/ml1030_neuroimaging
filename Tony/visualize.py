@@ -1,9 +1,10 @@
 # %% 
 from nilearn import plotting
 from nilearn import image
+import nilearn
 
 # %%
-subjectDir = "../data/ds000201-download/sub-9001/"
+subjectDir = "../../data/ds000201-download/sub-9001/"
 sessionDir = "ses-1/"
 
 # %%
@@ -20,7 +21,15 @@ plotting.plot_glass_brain(subjectDir + sessionDir + "anat/sub-9001_ses-1_T1w.nii
 smoothed_img = image.smooth_img(subjectDir + 
                                 sessionDir + 
                                 "anat/sub-9001_ses-1_T1w.nii.gz", fwhm=5)   
-plotting.plot_anat(smoothed_img)
+disp = plotting.plot_anat(smoothed_img)
+
+# %%
+# Read from and return Nifti image object that is smoothed.
+smoothed_img = image.smooth_img(subjectDir + 
+                                sessionDir + 
+                                "anat/sub-9001_ses-1_T1w.nii.gz", fwhm='fast')   
+disp = plotting.plot_anat(smoothed_img)
+disp.add_contours(smoothed_img, levels=[0.5], colors='r')
 
 # %%
 # Attempt to read 4D image
@@ -38,5 +47,11 @@ iterable = image.iter_img(subjectDir +
                                sessionDir + 
                                "func/sub-9001_ses-1_task-faces_bold.nii.gz")
 sum(1 for _ in iterable)
+
+# %%
+from nilearn.decoding import SpaceNetRegressor
+
+# %%
+
 
 # %%
