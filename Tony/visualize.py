@@ -36,26 +36,29 @@ disp.add_contours(smoothed_img, levels=[0.5], colors='r')
 # Attempt to read 4D image: MNI Asym file
 i = 0
 while i < 100:
-    mni_file = image.index_img(subjectDir + 
+    normalized_image = image.index_img(subjectDir + 
     sessionDir + 
-    "func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", i)
+    "func/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", i)
 
-    plt = plotting.plot_img(mni_file, cut_coords=[0,0,0])
-    # plt.savefig('./plots/series/' + str(i) + '.png')
-    # plt.close()
-    # i += 1
-    i += 10
+    plt = plotting.plot_img(normalized_image, cut_coords=[0,0,0])
+    plt.savefig('./plots/series/' + str(i) + '.png')
+    plt.close()
+    i += 1
+    # i += 10
 
 # %%
 # Attempt to read 4D image: reg file
 i = 0
 while i < 100:
-    reg_file = image.index_img(subjectDir + 
+    nonnormalized_image = image.index_img(subjectDir + 
     sessionDir + 
     "func/sub-9001_ses-1_task-faces_space-T1w_desc-preproc_bold.nii.gz", i)
 
-    plotting.plot_img(reg_file, cut_coords=[0,0,0])
-    i += 10
+    plt = plotting.plot_img(nonnormalized_image, cut_coords=[0,0,0])
+    plt.savefig('./plots/seriesT1/' + str(i) + '.png')
+    plt.close()
+    i += 1
+    # i += 10
 
 # %%
 # How many images in the time dimension?
@@ -93,11 +96,20 @@ nib.is_proxy(img.dataobj)
 from nilearn.input_data import NiftiMasker
 masker = NiftiMasker(mask_img=subjectDir + 
                sessionDir + 
-               "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz", standardize=True)
-fmri_masked = masker.fit(mni_file)
+               "func/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz", standardize=True)
+fmri_masked = masker.fit(normalized_image)
 
 # %%
 report = masker.generate_report()
 report
 
+# %%
+temp = masker.fit_transform(nonnormalized_image)
+temp
+temp.shape
+
+# %%
+fmri_masked_non_norm = masker.fit(nonnormalized_image)
+report = masker.generate_report()
+report
 # %%
