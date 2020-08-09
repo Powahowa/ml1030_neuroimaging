@@ -34,19 +34,28 @@ disp.add_contours(smoothed_img, levels=[0.5], colors='r')
 
 # %%
 # Attempt to read 4D image: MNI Asym file
-mni_file = image.index_img(subjectDir + 
+i = 0
+while i < 100:
+    mni_file = image.index_img(subjectDir + 
     sessionDir + 
-    "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", 0)
+    "func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", i)
 
-plotting.plot_img(mni_file, cut_coords=[0,0,0])
+    plt = plotting.plot_img(mni_file, cut_coords=[0,0,0])
+    # plt.savefig('./plots/series/' + str(i) + '.png')
+    # plt.close()
+    # i += 1
+    i += 10
 
 # %%
 # Attempt to read 4D image: reg file
-reg_file = image.index_img(subjectDir + 
+i = 0
+while i < 100:
+    reg_file = image.index_img(subjectDir + 
     sessionDir + 
-    "func/sub-9001_ses-1_task-arrows_space-T1w_desc-preproc_bold.nii.gz", 0)
+    "func/sub-9001_ses-1_task-faces_space-T1w_desc-preproc_bold.nii.gz", i)
 
-plotting.plot_img(reg_file, cut_coords=[0,0,0])
+    plotting.plot_img(reg_file, cut_coords=[0,0,0])
+    i += 10
 
 # %%
 # How many images in the time dimension?
@@ -82,5 +91,13 @@ nib.is_proxy(img.dataobj)
 # decoding. The masker will extract a 2D array ready for machine learning
 # with nilearn:
 from nilearn.input_data import NiftiMasker
-masker = NiftiMasker(mask_img=mask_filename, standardize=True)
-fmri_masked = masker.fit_transform(fmri_filename)
+masker = NiftiMasker(mask_img=subjectDir + 
+               sessionDir + 
+               "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz", standardize=True)
+fmri_masked = masker.fit(mni_file)
+
+# %%
+report = masker.generate_report()
+report
+
+# %%
