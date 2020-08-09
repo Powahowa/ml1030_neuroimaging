@@ -5,7 +5,7 @@ import nilearn
 import nibabel as nib
 
 # %%
-subjectDir = "../../data/ds000201-download/sub-9001/"
+subjectDir = "../../data/preprocessed/sub-9001/"
 sessionDir = "ses-1/"
 
 # %%
@@ -33,20 +33,26 @@ disp = plotting.plot_anat(smoothed_img)
 disp.add_contours(smoothed_img, levels=[0.5], colors='r')
 
 # %%
-# Attempt to read 4D image
-first_volume = image.index_img(subjectDir + 
-                               sessionDir + 
-                               "func/sub-9001_ses-1_task-rest_bold.nii.gz", 0)
+# Attempt to read 4D image: MNI Asym file
+mni_file = image.index_img(subjectDir + 
+    sessionDir + 
+    "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", 0)
+
+plotting.plot_img(mni_file, cut_coords=[0,0,0])
 
 # %%
-# The most basic plot, testing coords
-plotting.plot_img(first_volume, cut_coords=[0,0,0])
+# Attempt to read 4D image: reg file
+reg_file = image.index_img(subjectDir + 
+    sessionDir + 
+    "func/sub-9001_ses-1_task-arrows_space-T1w_desc-preproc_bold.nii.gz", 0)
+
+plotting.plot_img(reg_file, cut_coords=[0,0,0])
 
 # %%
 # How many images in the time dimension?
 iterable = image.iter_img(subjectDir + 
-                          sessionDir + 
-                          "func/sub-9001_ses-1_task-faces_bold.nii.gz")
+    sessionDir + 
+    "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
 sum(1 for _ in iterable)
 
 # %%
