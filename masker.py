@@ -4,6 +4,8 @@ from nilearn import image
 import nilearn
 import nibabel as nib
 from nilearn.input_data import NiftiMasker
+from nilearn.image import load_img, math_img
+
 
 # %%
 subjectDir = "./data/preprocessed/sub-9001/"
@@ -141,21 +143,81 @@ plotMask(intersectedFA, facesSlice)
 
 #resample masks using NiftiMasker
 
-facesSliceResamp = makeNiftiMask(facesMaskFile, facesSlice)
+# resample faces
 
-sleepinessSliceResamp = makeNiftiMask(sleepinessMaskFile, facesSlice)
+facesSliceResamp = NiftiMasker(mask_img=facesMaskFile, target_affine=facesSlice.affine, target_shape=facesSlice.shape, standardize=True)
 
 fitted = facesSliceResamp.fit(facesSlice)
 
-facesSliceResampNifti = NiftiMasker.inverse_transform(facesSliceResamp, X=fitted)
+maskedArray = facesSliceResamp.transform(facesSlice)
+
+faces_resamp_mask = fitted.inverse_transform(X=maskedArray)
+
+faces_resamp_mask.to_filename("sub-9001_ses-1_task-faces_resamp_mask.nii.gz")
+
+#BINARIZING values in mask
+tstat_img = load_img(faces_resamp_mask)
+#supposedly: all values greater than 0 are set to 1, and all values less than 0 are set to zero.
+faces_resamp_mask = math_img('img > 0', img=tstat_img)
+
+plotMask(faces_resamp_mask, facesSlice)
+
+
+#%%
+# resample sleepiness
+
+sleepinessSliceResamp = NiftiMasker(mask_img=sleepinessMaskFile, target_affine=facesSlice.affine, target_shape=facesSlice.shape, standardize=True)
+
+fitted = sleepinessSliceResamp.fit(sleepinessSlice)
+maskedArray = sleepinessSliceResamp.transform(sleepinessSlice)
+sleepiness_resamp_mask = fitted.inverse_transform(X=maskedArray)
+
+sleepiness_resamp_mask.to_filename("sub-9001_ses-1_task-sleepiness_resamp_mask.nii.gz")
+
+#BINARIZING values in mask
+tstat_img = load_img(sleepiness_resamp_mask)
+#supposedly: all values greater than 0 are set to 1, and all values less than 0 are set to zero.
+sleepiness_resamp_mask = math_img('img > 0', img=tstat_img)
+
+plotMask(sleepiness_resamp_mask, facesSlice)
 
 
 #%% calculate intersection of faces and sleepiness masks
 
-intersectedFS = nilearn.masking.intersect_masks([facesSliceResamp, sleepinessSliceResamp], threshold=1, connected=True)
+intersectedFS = nilearn.masking.intersect_masks([faces_resamp_mask, sleepiness_resamp_mask], threshold=1, connected=True)
 
 
 #plot intersected mask on faces slice
-plotMask(intersectedFA, sleepinessSlice)
+plotMask(intersectedFS, sleepinessSlice)
+
+# %%
+
+#cropping/applying mask on image attempt
+
+cropMask = NiftiMasker(mask_img=intersectedFS, standardize=True)
+
+fitted = cropMask.fit(sleepinessSlice)
+
+maskedArray = cropMask.transform(sleepinessSlice)
+
+sleepinessCrop = fitted.inverse_transform(X=maskedArray)
+
+#cropping/applying mask on image attempt
+
+cropMask = NiftiMasker(mask_img=intersectedFS, standardize=True)
+
+fitted = cropMask.fit(facesSlice)
+
+maskedArray = cropMask.transform(facesSlice)
+
+facesCrop = fitted.inverse_transform(X=maskedArray)
+
+
+# %%
+nilearn.plotting.plot_img(facesCrop, cut_coords=[0,0,0], title="Masked Faces Image")
+nilearn.plotting.plot_img(facesSlice, cut_coords=[0,0,0], title="Original Faces Image")
+nilearn.plotting.plot_img(sleepinessCrop, cut_coords=[0,0,0], title = "Masked Sleepiness Image")
+nilearn.plotting.plot_img(sleepinessSlice, cut_coords=[0,0,0], title= "Original Sleepiness Image")
+
 
 # %%
