@@ -5,7 +5,8 @@ import nilearn
 import nibabel as nib
 
 # %%
-subjectDir = "../../data/preprocessed/sub-9001/"
+subjectDir = "../data/preprocessed/sub-9001/"
+
 sessionDir = "ses-1/"
 
 # %%
@@ -38,8 +39,8 @@ while i < 100:
     # plt = plotting.plot_img(normalized_image, cut_coords=[0,0,0])
     # plt.savefig('./plots/series-normalized/' + str(i) + '.png')
     # plt.close()
-    # i += 1
-    i += 20
+    i += 1
+    #i += 20
 
 # %%
 # Attempt to read generate slideshow for 4D image: Non-normalized file
@@ -53,8 +54,8 @@ while i < 100:
     # plt = plotting.plot_img(nonnormalized_image, cut_coords=[0,0,0])
     # plt.savefig('./plots/series-nonnonmalized/' + str(i) + '.png')
     # plt.close()
-    # i += 1
-    i += 20
+    i += 1
+    #i += 20
 
 # %%
 # How many images in the time dimension?
