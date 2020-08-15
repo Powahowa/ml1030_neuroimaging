@@ -16,33 +16,6 @@ sessionDir = "ses-1/"
 plotting.plot_anat(subjectDir + 
     "anat/sub-9001_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz")
 
-# %%
-# Read from and return Nifti image object that is smoothed.
-smoothed_img = image.smooth_img(subjectDir + 
-    "anat/sub-9001_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz", fwhm=5)   
-disp = plotting.plot_anat(smoothed_img)
-
-# %%
-# Read from and return Nifti image object that is smoothed.
-smoothed_img = image.smooth_img(subjectDir + 
-    "anat/sub-9001_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz", fwhm='fast')   
-disp = plotting.plot_anat(smoothed_img)
-disp.add_contours(smoothed_img, levels=[0.5], colors='r')
-
-# %%
-# Attempt to read and generate slideshow for 4D image: Normalized MNI Asym file
-# NOTE: uncomment/comment stuff to actually generate the images to be used for slideshow.html
-i = 0
-while i < 200:
-    normalized_image = image.index_img(subjectDir + 
-    sessionDir + 
-    "func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", i)
-
-    # plt = plotting.plot_img(normalized_image, cut_coords=[0,0,0])
-    # plt.savefig('./plots/series-normalized/' + str(i) + '.png')
-    # plt.close()
-    i += 1
-    #i += 20
 
 # %%
 # How many images in the time dimension?
@@ -52,119 +25,107 @@ sessionDir +
 "func/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
 sum(1 for _ in iterable)
 
-# %%
-# Attempt to read generate slideshow for 4D image: Non-normalized file
-# NOTE: uncomment/comment stuff to actually generate the images to be used for slideshow.html
-i = 0
-while i < 100:
-    nonnormalized_image = image.index_img(subjectDir + 
-    sessionDir + 
-    "func/sub-9001_ses-1_task-faces_space-T1w_desc-preproc_bold.nii.gz", i)
+#%%
 
-    # plt = plotting.plot_img(nonnormalized_image, cut_coords=[0,0,0])
-    # plt.savefig('./plots/series-nonnonmalized/' + str(i) + '.png')
-    # plt.close()
-    # i += 1
-    i += 20
+#load two FULL base scans for comparison
 
+# sleepinessFull = image.load_img(subjectDir + 
+# sessionDir + 
+# "func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
 
-# %%
-# Alternate method: Using Nibabel to load 4D image
-img = nib.load(subjectDir + 
-    sessionDir + 
-    "func/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+# facesFull = image.load_img(subjectDir + 
+# sessionDir + 
+# "func/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
 
-
-
-
-# %%
-
-#plot mask (function)
-
-def plotMask(subjectDir, sessionDir, normalized_image):
-
-    # We first create a masker, and ask it to normalize the data to improve the
-    # decoding. The masker will extract a 2D array ready for machine learning
-    # with nilearn:
-    masker = NiftiMasker(mask_img=subjectDir + 
-        sessionDir + 
-        "func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz", standardize=True)
-    fmri_masked = masker.fit(normalized_image)
-
-    # Generate a report with the mask on normalized image
-    report = masker.generate_report()
-    report
-
-    # Check out the shape of normalized image with mask applied
-    norm_maskapplied = masker.fit_transform(normalized_image)
-    print(norm_maskapplied)
-    norm_maskapplied.shape
-
-
-# %%
-
-
-sleepiness = image.load_img(subjectDir + 
-sessionDir + 
-"func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
 
 #%%
-plotMask(subjectDir, sessionDir, sleepiness)
 
-#%% test run before making function
+#load two SLICES of base scans for comparison
 
-# We first create a masker, and ask it to normalize the data to improve the
-# decoding. The masker will extract a 2D array ready for machine learning
-# with nilearn:
-masker = NiftiMasker(mask_img=subjectDir + 
-    sessionDir + 
-    "func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz", standardize=True)
-fmri_masked = masker.fit(sleepiness)
+facesSlice = image.index_img(subjectDir + 
+sessionDir + 
+"func/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", 0)
+
+sleepinessSlice = image.index_img(subjectDir + 
+sessionDir + 
+"func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", 0)
+
+arrowsSlice = image.index_img(subjectDir + 
+sessionDir + 
+"func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", 0)
+
+
+#%% generate mask of faces and plot on sleepiness slice
+
+from nilearn.input_data import NiftiMasker
+
+# plotting.plot_anat(subjectDir + 
+#     "anat/sub-9001_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz")
+
+
+facesMaskFile = (subjectDir + 
+sessionDir + 
+"func/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz")
+maskerFaces = NiftiMasker(mask_img=facesMaskFile, standardize=True)
+fmri_masked = maskerFaces.fit(facesSlice)
 
 # Generate a report with the mask on normalized image
-report = masker.generate_report()
+report = maskerFaces.generate_report()
 report
 
-# Check out the shape of normalized image with mask applied
-norm_maskapplied = masker.fit_transform(sleepiness)
-print(norm_maskapplied)
-norm_maskapplied.shape
+#%% generate mask of sleepiness and plot on sleepiness slice
 
-#%%
-
-arrows = image.load_img(subjectDir + 
+sleepinessMaskFile = (subjectDir + 
 sessionDir + 
-"func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+"func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz")
+maskerSleepiness = NiftiMasker(mask_img=sleepinessMaskFile, standardize=True)
+fmri_masked = maskerSleepiness.fit(facesSlice)
 
-faces = image.load_img(subjectDir + 
+# Generate a report with the mask on normalized image
+report = maskerSleepiness.generate_report()
+report
+
+
+#%% generate mask of arrows and plot on sleepiness slice
+
+arrowsMaskFile = (subjectDir + 
 sessionDir + 
-"func/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+"func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz")
+maskerarrows = NiftiMasker(mask_img=arrowsMaskFile, standardize=True)
+fmri_masked = maskerarrows.fit(facesSlice)
 
-hands = image.load_img(subjectDir + 
-sessionDir + 
-"func/sub-9001_ses-1_task-hands_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+# Generate a report with the mask on normalized image
+report = maskerarrows.generate_report()
+report
 
-rest = image.load_img(subjectDir + 
-sessionDir + 
-"func/sub-9001_ses-1_task-rest_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+#%% calculate intersection of faces and sleepiness masks
+
+#INTERSECT
+
+intersected = nilearn.masking.intersect_masks([facesMaskFile, arrowsMaskFile], threshold=1, connected=True)
+
+
+
+#%% plot intersected mask on faces slice
+
+# arrowsMaskFile = (subjectDir + 
+# sessionDir + 
+# "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz")
+maskerarrows = NiftiMasker(mask_img=intersected, standardize=True)
+fmri_masked = maskerarrows.fit(arrowsSlice)
+
+# Generate a report with the mask on normalized image
+report = maskerarrows.generate_report()
+report
 
 
 # %%
 
+#resampling bullshit
 
-# %%
+facesSliceResamp = nilearn.image.resample_img(facesSlice, target_affine=facesSlice.affine)
 
+sleepinessSliceResamp = nilearn.image.resample_img(facesSlice, target_affine=facesSlice.affine)
 
-# %%
-
-
-# %%
-
-
-# %%
-# Check out the shape of non-normalized image with mask applied
-nonnorm_maskapplied = masker.fit_transform(nonnormalized_image)
-print(nonnorm_maskapplied)
-nonnorm_maskapplied.shape
 
 # %%
