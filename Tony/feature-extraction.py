@@ -6,6 +6,7 @@ import glob
 import pathlib
 import functools
 import time
+from pycaret.classification import *
 
 def timer(func):
     """Print the runtime of the decorated function"""
@@ -21,20 +22,8 @@ def timer(func):
     return wrapper
 
 # %%
-# @timer
-# def find_nii(relDataFolder):
-#     paths = list(pathlib.Path(relDataFolder).glob(
-#                     os.path.join('sub-*', 'ses-*', 'func', 
-#                         '*MNI152NLin2009cAsym_desc-preproc_bold.nii.gz')))
-                        
-#     return paths
-
-# nii_paths = find_nii(pathlib.Path('../../data/preprocessed'))
-
-# %%
 @timer
 def find_paths(relDataFolder, subj, sess, func, patt):
-    # print(pathlib.Path.joinpath(subPath, pattern))
     paths = list(pathlib.Path(relDataFolder).glob(
                     os.path.join(subj, sess, func, patt)))
                         
@@ -57,3 +46,11 @@ nii_paths = find_paths(relDataFolder='../../data/preprocessed',
 nii_paths
 
 # %%
+df = pd.DataFrame(pd.read_csv(regressor_paths[0], sep='\t'))
+for paths in regressor_paths[1:]:
+    temp = pd.DataFrame(pd.read_csv(paths, sep='\t'))
+    df.append(temp)
+df
+
+# %%
+setup(data=df,  target='Legendary')
