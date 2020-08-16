@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # %%
-subjectDir = "../../data/ds000201-download/sub-9001/"
+subjectDir = "../data/ds000201-download/sub-9001/"
 sessionDir = "ses-1/"
 
 # %%

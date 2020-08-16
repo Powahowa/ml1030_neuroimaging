@@ -30,7 +30,7 @@ def find_paths(relDataFolder, subj, sess, func, patt):
     return paths
 
 # %%
-regressor_paths = find_paths(relDataFolder='../../data/preprocessed',
+regressor_paths = find_paths(relDataFolder='../data/preprocessed',
                             subj='sub-*',
                             sess='ses-*',
                             func='func',
@@ -38,7 +38,7 @@ regressor_paths = find_paths(relDataFolder='../../data/preprocessed',
 regressor_paths
 
 # %%
-nii_paths = find_paths(relDataFolder='../../data/preprocessed',
+nii_paths = find_paths(relDataFolder='../data/preprocessed',
                         subj='sub-*',
                         sess='ses-*',
                         func='func',
