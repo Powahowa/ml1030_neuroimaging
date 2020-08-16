@@ -3,6 +3,7 @@ from nilearn import plotting
 from nilearn import image
 import nilearn
 import nibabel as nib
+import numpy as np
 from nilearn.input_data import NiftiMasker
 from nilearn.image import load_img, math_img
 
@@ -15,6 +16,35 @@ sessionDir = "ses-1/"
 # Plot anatomy image
 plotting.plot_anat(subjectDir + 
     "anat/sub-9001_space-MNI152NLin2009cAsym_desc-preproc_T1w.nii.gz")
+
+
+# %%
+
+#get unique values in raw nifti data array as a sanity check
+
+img = image.load_img(subjectDir + 
+sessionDir + 
+"func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+
+image_data = np.asarray(img.dataobj)
+
+img.uncache()
+
+print("unique values of actual Nitfi image")
+print(np.unique(image_data))
+
+
+img = image.load_img(subjectDir + 
+    sessionDir + 
+    "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-brain_mask.nii.gz")
+
+image_data = np.asarray(img.dataobj)
+
+img.uncache()
+
+print("unique values of actual MASK image")
+print(np.unique(image_data))
+
 
 # %% Function Definitions
 
@@ -68,6 +98,49 @@ def makeNiftiMask (maskFile, imageFile, affine=None):
 # sessionDir + 
 # "func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
 
+#%%
+
+#look at all the image shapes
+
+# shapes = []
+
+# img = image.load_img(subjectDir + 
+# sessionDir + 
+# "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+
+# shapes.append(img.shape)
+# img.uncache()
+
+# img = image.load_img(subjectDir + 
+# sessionDir + 
+# "func/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+
+# shapes.append(img.shape)
+# img.uncache()
+
+# img = image.load_img(subjectDir + 
+# sessionDir + 
+# "func/sub-9001_ses-1_task-hands_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+
+# shapes.append(img.shape)
+# img.uncache()
+
+# img = image.load_img(subjectDir + 
+# sessionDir + 
+# "func/sub-9001_ses-1_task-rest_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+
+# shapes.append(img.shape)
+# img.uncache()
+
+# img = image.load_img(subjectDir + 
+# sessionDir + 
+# "func/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
+
+# shapes.append(img.shape)
+# img.uncache()
+
+# print("Arrows, Faces, Hands, Rest, Sleepiness")
+# shapes
 #%%
 
 #load all SLICES of base scans for comparison
@@ -162,6 +235,19 @@ faces_resamp_mask = math_img('img > 0', img=tstat_img)
 
 plotMask(faces_resamp_mask, facesSlice)
 
+# %%
+
+#UNMASK test
+#resample masks using NiftiMasker
+
+# resample faces
+
+facesSliceResamp = NiftiMasker(mask_img=facesMaskFile, target_affine=facesSlice.affine, target_shape=facesSlice.shape, standardize=False)
+
+facesSliceUnmask = nilearn.masking.unmask(facesSliceResamp, facesSlice)
+
+plotMask(facesSliceUnmask, facesSlice)
+
 
 #%%
 # resample sleepiness
@@ -184,6 +270,7 @@ plotMask(sleepiness_resamp_mask, facesSlice)
 
 #%% calculate intersection of faces and sleepiness masks
 
+#calculate interset of the masks. threshold = 1 means intersection, not union
 intersectedFS = nilearn.masking.intersect_masks([faces_resamp_mask, sleepiness_resamp_mask], threshold=1, connected=True)
 
 
@@ -218,6 +305,8 @@ nilearn.plotting.plot_img(facesCrop, cut_coords=[0,0,0], title="Masked Faces Ima
 nilearn.plotting.plot_img(facesSlice, cut_coords=[0,0,0], title="Original Faces Image")
 nilearn.plotting.plot_img(sleepinessCrop, cut_coords=[0,0,0], title = "Masked Sleepiness Image")
 nilearn.plotting.plot_img(sleepinessSlice, cut_coords=[0,0,0], title= "Original Sleepiness Image")
+
+
 
 
 # %%
