@@ -25,7 +25,9 @@ def timer(func):
 @timer
 def find_paths(relDataFolder, subj, sess, func, patt):
     paths = list(pathlib.Path(relDataFolder).glob(
-                    os.path.join(subj, sess, func, patt)))
+                        os.path.join(subj, sess, func, patt)
+                    )
+                )
                         
     return paths
 
@@ -46,11 +48,17 @@ nii_paths = find_paths(relDataFolder='../data/preprocessed',
 nii_paths
 
 # %%
-df = pd.DataFrame(pd.read_csv(regressor_paths[0], sep='\t'))
-for paths in regressor_paths[1:]:
+session_info = pd.read_csv(
+        '../data/SleepDiaryData_160320_pseudonymized_final.tsv',
+        sep='\t'
+    )
+
+# %%
+df_list = []
+for paths in regressor_paths:
     temp = pd.DataFrame(pd.read_csv(paths, sep='\t'))
-    df.append(temp)
-df
+    df_list.append(temp)
+df = pd.concat(df_list, join='inner', ignore_index=True)
 
 # %%
 setup(data=df,  target='Legendary')
