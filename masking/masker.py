@@ -7,7 +7,7 @@ import numpy as np
 from nilearn.input_data import NiftiMasker
 from nilearn.image import load_img, math_img
 
-subjectDir = "./data/preprocessed/sub-9001/"
+subjectDir = "../data/preprocessed/sub-9001/"
 sessionDir = "ses-1/"
 
 # %% Function Definitions
