@@ -17,6 +17,8 @@ import numpy as np
 from nilearn.input_data import NiftiMasker
 from nilearn.image import load_img, math_img
 
+from joblib import Parallel, delayed
+
 # %%
 # Function to find all the regressor file paths
 def timer(func):
@@ -106,7 +108,7 @@ components_df
 #%% apply mask to existing BOLD files [test with one image]
 
 currentImage = image.load_img(components_df.path.iloc[0])
-cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="hands", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="hands", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -131,13 +133,21 @@ plt = nilearn.plotting.plot_img(testFromMemory, cut_coords=[0,0,0], title="Cropp
 
 #%% apply mask to all existing BOLD files
 
-for i in range(len(components_df)):
-    currentImage = image.load_img(components_df.path.iloc[i], wildcards=True, dtype=None)
-    cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=True)
-    #fitted = cropMask.fit(loadSlice(task="hands", indexPosition=0))
-    #maskedArray = cropMask.transform(loadSlice(task="hands", indexPosition=0))
-    #above 2 lines replaced by "fit_transform"
+def writeAppliedMasks (i):
+    currentImage = image.load_img(components_df.path.iloc[i])
+    cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
     maskedArray = cropMask.fit_transform(currentImage)
     handsCrop = cropMask.inverse_transform(X=maskedArray)
-    #this is just a slice, no point saving it to disk
-    #handsCrop.to_filename("sub-9001_ses-1_task-hands_space-MNI152NLin2009cAsym_desc-preproc_masked_(sub-9001-9072_resamp_intersected)_bold.nii.gz")
+
+    currentImage = image.load_img(components_df.path.iloc[i])
+    cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
+    maskedArray = cropMask.fit_transform(currentImage)
+    cropImage = cropMask.inverse_transform(X=maskedArray)
+    filename = components_df.path.iloc[i][:-7] + "_masked_(sub-9001-9072_resamp_intersected)_bold.nii.gz"
+    cropImage.to_filename(filename)
+
+
+#if you run out of memory change n_jobs to the max number of BOLD files you can store in memory
+Parallel(n_jobs=4, verbose=100)(delayed(writeAppliedMasks)(i) for i in range(len(components_df)))
+
+#%%
