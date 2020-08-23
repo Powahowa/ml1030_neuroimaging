@@ -30,7 +30,7 @@ def plotMask (maskFile, imageFile, affine=None):
     if (affine == None):
         affine = imageFile.affine
 
-    masker = NiftiMasker(mask_img=maskFile, target_affine=affine, standardize=True)
+    masker = NiftiMasker(mask_img=maskFile, target_affine=affine, standardize=False)
     fmri_masked = masker.fit(imageFile)
 
     # Generate a report with the mask on normalized image
@@ -84,7 +84,7 @@ def resampleMask(maskFile, affine=None):
     sleepinessSliceShape = loadSlice(task="sleepiness", indexPosition=0).shape
 
     maskResamp = NiftiMasker(mask_img=maskFile, target_affine=sleepinessSliceAffine, 
-    target_shape=sleepinessSliceShape, standardize=True)
+    target_shape=sleepinessSliceShape, standardize=False)
     maskResamp.fit()
     #maskResamp.mask_img_.to_filename("sub-9001_ses-1_task-hands_resamp_mask.nii.gz")
     #plotMask(maskResamp.mask_img_, loadSlice(task="hands", indexPosition=0))
@@ -124,7 +124,7 @@ finalMask.to_filename("sub-9001-9072_resamp_intersected_mask.nii.gz")
 savePlots = False
 
 #arrows
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="arrows", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="arrows", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -143,7 +143,7 @@ if savePlots == True:
     plt.close()
 
 #faces
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="faces", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="faces", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -162,7 +162,7 @@ if savePlots == True:
     plt.close()
 
 #hands
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="hands", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="hands", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -181,7 +181,7 @@ if savePlots == True:
     plt.close()
 
 #rest
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="rest", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="rest", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -200,7 +200,7 @@ if savePlots == True:
     plt.close()
 
 #sleepiness
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="sleepiness", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="sleepiness", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -296,7 +296,7 @@ sleepinessSliceShape = loadSlice(task="sleepiness", indexPosition=0).shape
 #%%
 #arrows resample
 arrowsMaskResamp = NiftiMasker(mask_img=arrowsMaskFile, target_affine=sleepinessSliceAffine, 
-target_shape=sleepinessSliceShape, standardize=True)
+target_shape=sleepinessSliceShape, standardize=False)
 arrowsMaskResamp.fit()
 arrowsMaskResamp.mask_img_.to_filename("sub-9001_ses-1_task-arrows_resamp_mask.nii.gz")
 plotMask(arrowsMaskResamp.mask_img_, loadSlice(task="arrows", indexPosition=0))
@@ -304,7 +304,7 @@ plotMask(arrowsMaskResamp.mask_img_, loadSlice(task="arrows", indexPosition=0))
 #%%
 #faces resample
 facesMaskResamp = NiftiMasker(mask_img=facesMaskFile, target_affine=sleepinessSliceAffine, 
-target_shape=sleepinessSliceShape, standardize=True)
+target_shape=sleepinessSliceShape, standardize=False)
 facesMaskResamp.fit()
 facesMaskResamp.mask_img_.to_filename("sub-9001_ses-1_task-faces_resamp_mask.nii.gz")
 plotMask(facesMaskResamp.mask_img_, loadSlice(task="faces", indexPosition=0))
@@ -312,7 +312,7 @@ plotMask(facesMaskResamp.mask_img_, loadSlice(task="faces", indexPosition=0))
 #%%
 #hands resample
 handsMaskResamp = NiftiMasker(mask_img=handsMaskFile, target_affine=sleepinessSliceAffine, 
-target_shape=sleepinessSliceShape, standardize=True)
+target_shape=sleepinessSliceShape, standardize=False)
 handsMaskResamp.fit()
 handsMaskResamp.mask_img_.to_filename("sub-9001_ses-1_task-hands_resamp_mask.nii.gz")
 plotMask(handsMaskResamp.mask_img_, loadSlice(task="hands", indexPosition=0))
@@ -320,7 +320,7 @@ plotMask(handsMaskResamp.mask_img_, loadSlice(task="hands", indexPosition=0))
 #%%
 #rest resample
 restMaskResamp = NiftiMasker(mask_img=restMaskFile, target_affine=sleepinessSliceAffine, 
-target_shape=sleepinessSliceShape, standardize=True)
+target_shape=sleepinessSliceShape, standardize=False)
 restMaskResamp.fit()
 restMaskResamp.mask_img_.to_filename("sub-9001_ses-1_task-rest_resamp_mask.nii.gz")
 plotMask(restMaskResamp.mask_img_, loadSlice(task="rest", indexPosition=0))
@@ -328,7 +328,7 @@ plotMask(restMaskResamp.mask_img_, loadSlice(task="rest", indexPosition=0))
 #%%
 #sleepiness resample
 sleepinessMaskResamp = NiftiMasker(mask_img=sleepinessMaskFile, target_affine=sleepinessSliceAffine, 
-target_shape=sleepinessSliceShape, standardize=True)
+target_shape=sleepinessSliceShape, standardize=False)
 sleepinessMaskResamp.fit()
 sleepinessMaskResamp.mask_img_.to_filename("sub-9001_ses-1_task-sleepiness_resamp_mask.nii.gz")
 plotMask(sleepinessMaskResamp.mask_img_, loadSlice(task="sleepiness", indexPosition=0))
@@ -351,7 +351,7 @@ plotMask(intersectedMask, loadSlice(task="sleepiness", indexPosition=0))
 #cropping/applying mask on image attempt for each task
 
 #arrows
-cropMask = NiftiMasker(mask_img=intersectedMask, standardize=True)
+cropMask = NiftiMasker(mask_img=intersectedMask, standardize=False)
 #fitted = cropMask.fit(loadSlice(task="arrows", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="arrows", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -366,7 +366,7 @@ plt = nilearn.plotting.plot_img(arrowsCrop, cut_coords=[0,0,0], title="Masked ar
 #plt.close()
 
 #faces
-cropMask = NiftiMasker(mask_img=intersectedMask, standardize=True)
+cropMask = NiftiMasker(mask_img=intersectedMask, standardize=False)
 #fitted = cropMask.fit(loadSlice(task="faces", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="faces", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -381,7 +381,7 @@ plt = nilearn.plotting.plot_img(facesCrop, cut_coords=[0,0,0], title="Masked fac
 #plt.close()
 
 #hands
-cropMask = NiftiMasker(mask_img=intersectedMask, standardize=True)
+cropMask = NiftiMasker(mask_img=intersectedMask, standardize=False)
 #fitted = cropMask.fit(loadSlice(task="hands", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="hands", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -396,7 +396,7 @@ plt = nilearn.plotting.plot_img(handsCrop, cut_coords=[0,0,0], title="Masked han
 #plt.close()
 
 #rest
-cropMask = NiftiMasker(mask_img=intersectedMask, standardize=True)
+cropMask = NiftiMasker(mask_img=intersectedMask, standardize=False)
 #fitted = cropMask.fit(loadSlice(task="rest", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="rest", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -411,7 +411,7 @@ plt = nilearn.plotting.plot_img(restCrop, cut_coords=[0,0,0], title="Masked rest
 #plt.close()
 
 #sleepiness
-cropMask = NiftiMasker(mask_img=intersectedMask, standardize=True)
+cropMask = NiftiMasker(mask_img=intersectedMask, standardize=False)
 #fitted = cropMask.fit(loadSlice(task="sleepiness", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="sleepiness", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -434,7 +434,7 @@ plt = nilearn.plotting.plot_img(sleepinessCrop, cut_coords=[0,0,0], title="Maske
 
 #replaced by accessing the re-sampled mask directly using [NiftiMasker object].mask_img_
 
-# sleepinessMaskResamp = NiftiMasker(mask_img=sleepinessMaskFile, target_affine=facesSlice.affine, target_shape=facesSlice.shape, standardize=True)
+# sleepinessMaskResamp = NiftiMasker(mask_img=sleepinessMaskFile, target_affine=facesSlice.affine, target_shape=facesSlice.shape, standardize=False)
 
 # fitted = sleepinessMaskResamp.fit(sleepinessSlice)
 # maskedArray = sleepinessMaskResamp.transform(sleepinessSlice)

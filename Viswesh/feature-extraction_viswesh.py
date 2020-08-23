@@ -6,7 +6,7 @@ import glob
 import pathlib
 import functools
 import time
-#from pycaret.classification import *
+from pycaret.classification import *
 import re
 
 # %%
@@ -55,21 +55,21 @@ nii_paths
 
 # %%
 # Prep for next cell
-participant_info_df = pd.read_csv(
-        '../data/participants.tsv',
+session_info_df = pd.read_csv(
+        '../data/SleepDiaryData_160320_pseudonymized_final.tsv',
         sep='\t'
     )
-participant_info_df
+session_info_df
 
 # %%
 # Get a mapping Dataframe of subject and which session is the sleep deprived one
 @timer
-def map_sleepdep(participant_info):
-    df = pd.DataFrame(participant_info.loc[:,['participant_id', 'Sl_cond']])
-    df.replace('sub-', '', inplace=True, regex=True)
+def map_sleepdep(session_info):
+    df = pd.DataFrame(session_info.loc[:,['participant_id', 'Sl_cond']])
+    df = df.groupby(['participant_id']).max()
     return df.rename(columns={'participant_id':'subject', 'Sl_cond':'sleepdep_session'})
 
-sleepdep_map = map_sleepdep(participant_info_df)
+sleepdep_map = map_sleepdep(session_info_df)
 sleepdep_map
 
 # %%
@@ -85,40 +85,44 @@ def get_bids_components(paths):
         subject = matches.group(1)
         session = matches.group(2)
         task = matches.group(3)
-        components_list.append([subject, session, task, path.__str__(), 0])
+        components_list.append([subject, session, task, path])
     df = pd.DataFrame(components_list, 
-                        columns=['subject', 'session', 'task', 'path', 'sleepdep']
+                        columns=['subject', 'session', 'task', 'path']
                      )
     return df
 
 components_df = get_bids_components(nii_paths)
 components_df
 
-# %%
-# TODO: Combine logically sleepdep_map and components_df into 1 dataframe
-final_df = components_df.merge(sleepdep_map, how='left')
+#%% plot a 4D image
+fdd = '../data/preprocessed/sub-9001/ses-1/func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz'
 
-# %%
-# Response column 'sleepdep' imputed from 'session' 'sleepdep_session'
-for i in range(len(final_df)-1):
-    if int(final_df['session'].iloc[i]) == int(final_df['sleepdep_session'].iloc[i]):
-        final_df['sleepdep'].iloc[i] = 1
+from nilearn import image
+import nibabel as nib
 
-# %%
+print(image.load_img(fdd).shape)
+
+#%% 
+
+#%% Feature Generation with NiftiMasker
 from nilearn.input_data import NiftiMasker
-masker = NiftiMasker(mask_img='../masking/sub-9001-9072_resamp_intersected_mask.nii.gz', standardize=False)
+masker = NiftiMasker(mask_img='../masking/sub-9001-9072_resamp_intersected_mask.nii.gz', standardize=True)
 
 #%% 
 fmri_masked = []
 
 #%%
-final_df["masked array"] = ""
+components_df["masked array"] = ""
 
 #%%
-for i in range(len(final_df)):
-    f_masked = masker.fit_transform(final_df['path'].iloc[i].__str__())
+for i in range(len(components_df)):
+    f_masked = masker.fit_transform(components_df['path'].iloc[i].__str__())
     #fmri_masked.append(f_masked)
-    final_df['masked array'].iloc[i] = f_masked
+    components_df['masked array'].iloc[i] = f_masked
+
+# %%
+# TODO: Combine logically sleepdep_map and components_df into 1 dataframe
+
 
 # %%
 # Regressors only to be used to further clean up the signal
@@ -154,3 +158,8 @@ clf1 = setup(data=df,  target='Sleep_Deprived')
 # %%
 # PyCaret create and run SVM
 svm = create_model('svm')
+
+
+#%% [markdown]
+# References
+#* https://nilearn.github.io/auto_examples/plot_decoding_tutorial.html
