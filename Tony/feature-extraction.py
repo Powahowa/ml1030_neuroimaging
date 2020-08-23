@@ -6,7 +6,7 @@ import glob
 import pathlib
 import functools
 import time
-from pycaret.classification import *
+#from pycaret.classification import *
 import re
 
 # %%
@@ -85,7 +85,7 @@ def get_bids_components(paths):
         subject = matches.group(1)
         session = matches.group(2)
         task = matches.group(3)
-        components_list.append([subject, session, task, path])
+        components_list.append([subject, session, task, path.__str__()])
     df = pd.DataFrame(components_list, 
                         columns=['subject', 'session', 'task', 'path']
                      )
