@@ -104,33 +104,6 @@ def get_bids_components(paths):
 components_df = get_bids_components(nii_paths)
 components_df
 
-
-#%% apply mask to existing BOLD files [test with one image]
-
-currentImage = image.load_img(components_df.path.iloc[0])
-cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
-#fitted = cropMask.fit(loadSlice(task="hands", indexPosition=0))
-#maskedArray = cropMask.transform(loadSlice(task="hands", indexPosition=0))
-#above 2 lines replaced by "fit_transform"
-maskedArray = cropMask.fit_transform(currentImage)
-cropImage = cropMask.inverse_transform(X=maskedArray)
-#this is just a slice, no point saving it to disk
-filename = components_df.path.iloc[0][:-7] + "_masked_(sub-9001-9072_resamp_intersected)_bold.nii.gz"
-cropImage.to_filename(filename)
-
-#%% load image back and plot as a test
-
-testFromDisk = image.index_img(filename, 0)
-
-testFromMemory = image.index_img(cropImage, 0)
-
-#using load image
-plt = nilearn.plotting.plot_img(testFromDisk, cut_coords=[0,0,0], title="Cropped (Mask Applied) Test Image [FROM FILE]")
-
-#using load image
-plt = nilearn.plotting.plot_img(testFromMemory, cut_coords=[0,0,0], title="Cropped (Mask Applied) Test Image [FROM MEMORY]")
-
-
 #%% apply mask to all existing BOLD files
 
 def writeAppliedMasks (i):
@@ -146,8 +119,43 @@ def writeAppliedMasks (i):
     filename = components_df.path.iloc[i][:-7] + "_masked_(sub-9001-9072_resamp_intersected)_bold.nii.gz"
     cropImage.to_filename(filename)
 
-
 #if you run out of memory change n_jobs to the max number of BOLD files you can store in memory
-Parallel(n_jobs=4, verbose=100)(delayed(writeAppliedMasks)(i) for i in range(len(components_df)))
+Parallel(n_jobs=1, verbose=100)(delayed(writeAppliedMasks)(i) for i in range(len(components_df)))
 
-#%%
+
+#%% load image back and plot as a test
+
+testFromDisk1 = image.index_img(components_df.path.iloc[0][:-7] + "_masked_(sub-9001-9072_resamp_intersected)_bold.nii.gz", 0)
+
+testFromDisk2 = image.index_img(components_df.path.iloc[1][:-7] + "_masked_(sub-9001-9072_resamp_intersected)_bold.nii.gz", 0)
+
+#using load image
+plt = nilearn.plotting.plot_img(testFromDisk1, cut_coords=[0,0,0], title="Cropped (Mask Applied) Test Image 1 [FROM DISK]")
+
+#using load image
+plt = nilearn.plotting.plot_img(testFromDisk2, cut_coords=[0,0,0], title="Cropped (Mask Applied) Test Image 2 [FROM DISK]")
+
+#%% apply mask to existing BOLD files [test with one image]
+
+# currentImage = image.load_img(components_df.path.iloc[0])
+# cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=False)
+# #fitted = cropMask.fit(loadSlice(task="hands", indexPosition=0))
+# #maskedArray = cropMask.transform(loadSlice(task="hands", indexPosition=0))
+# #above 2 lines replaced by "fit_transform"
+# maskedArray = cropMask.fit_transform(currentImage)
+# cropImage = cropMask.inverse_transform(X=maskedArray)
+# #this is just a slice, no point saving it to disk
+# filename = components_df.path.iloc[0][:-7] + "_masked_(sub-9001-9072_resamp_intersected)_bold.nii.gz"
+# cropImage.to_filename(filename)
+
+# #%% load image back and plot as a test
+
+# testFromDisk = image.index_img(filename, 0)
+
+# testFromMemory = image.index_img(cropImage, 0)
+
+# #using load image
+# plt = nilearn.plotting.plot_img(testFromDisk, cut_coords=[0,0,0], title="Cropped (Mask Applied) Test Image [FROM FILE]")
+
+# #using load image
+# plt = nilearn.plotting.plot_img(testFromMemory, cut_coords=[0,0,0], title="Cropped (Mask Applied) Test Image [FROM MEMORY]")
