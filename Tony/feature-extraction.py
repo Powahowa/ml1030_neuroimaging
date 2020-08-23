@@ -55,21 +55,21 @@ nii_paths
 
 # %%
 # Prep for next cell
-session_info_df = pd.read_csv(
-        '../data/SleepDiaryData_160320_pseudonymized_final.tsv',
+participant_info_df = pd.read_csv(
+        '../data/participants.tsv',
         sep='\t'
     )
-session_info_df
+participant_info_df
 
 # %%
 # Get a mapping Dataframe of subject and which session is the sleep deprived one
 @timer
-def map_sleepdep(session_info):
-    df = pd.DataFrame(session_info.loc[:,['participant_id', 'Sl_cond']])
-    df = df.groupby(['participant_id']).max()
+def map_sleepdep(participant_info):
+    df = pd.DataFrame(participant_info.loc[:,['participant_id', 'Sl_cond']])
+    df.replace('sub-', '', inplace=True, regex=True)
     return df.rename(columns={'participant_id':'subject', 'Sl_cond':'sleepdep_session'})
 
-sleepdep_map = map_sleepdep(session_info_df)
+sleepdep_map = map_sleepdep(participant_info_df)
 sleepdep_map
 
 # %%
@@ -85,9 +85,9 @@ def get_bids_components(paths):
         subject = matches.group(1)
         session = matches.group(2)
         task = matches.group(3)
-        components_list.append([subject, session, task, path.__str__()])
+        components_list.append([subject, session, task, path.__str__(), 0])
     df = pd.DataFrame(components_list, 
-                        columns=['subject', 'session', 'task', 'path']
+                        columns=['subject', 'session', 'task', 'path', 'sleepdep']
                      )
     return df
 
@@ -96,7 +96,29 @@ components_df
 
 # %%
 # TODO: Combine logically sleepdep_map and components_df into 1 dataframe
+final_df = components_df.merge(sleepdep_map, how='left')
 
+# %%
+# Response column 'sleepdep' imputed from 'session' 'sleepdep_session'
+for i in range(len(final_df)-1):
+    if int(final_df['session'].iloc[i]) == int(final_df['sleepdep_session'].iloc[i]):
+        final_df['sleepdep'].iloc[i] = 1
+
+# %%
+from nilearn.input_data import NiftiMasker
+masker = NiftiMasker(mask_img='../masking/sub-9001-9072_resamp_intersected_mask.nii.gz', standardize=False)
+
+#%% 
+fmri_masked = []
+
+#%%
+final_df["masked array"] = ""
+
+#%%
+for i in range(len(final_df)):
+    f_masked = masker.fit_transform(final_df['path'].iloc[i].__str__())
+    #fmri_masked.append(f_masked)
+    final_df['masked array'].iloc[i] = f_masked
 
 # %%
 # Regressors only to be used to further clean up the signal
