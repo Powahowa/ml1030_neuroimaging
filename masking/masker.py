@@ -124,7 +124,7 @@ finalMask.to_filename("sub-9001-9072_resamp_intersected_mask.nii.gz")
 savePlots = False
 
 #arrows
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=True)
 #fitted = cropMask.fit(loadSlice(task="arrows", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="arrows", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -143,7 +143,7 @@ if savePlots == True:
     plt.close()
 
 #faces
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=True)
 #fitted = cropMask.fit(loadSlice(task="faces", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="faces", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -162,7 +162,7 @@ if savePlots == True:
     plt.close()
 
 #hands
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=True)
 #fitted = cropMask.fit(loadSlice(task="hands", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="hands", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -181,7 +181,7 @@ if savePlots == True:
     plt.close()
 
 #rest
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=True)
 #fitted = cropMask.fit(loadSlice(task="rest", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="rest", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
@@ -200,7 +200,7 @@ if savePlots == True:
     plt.close()
 
 #sleepiness
-cropMask = NiftiMasker(mask_img=finalMask, standardize=True)
+cropMask = NiftiMasker(mask_img="sub-9001-9072_resamp_intersected_mask.nii.gz", standardize=True)
 #fitted = cropMask.fit(loadSlice(task="sleepiness", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="sleepiness", indexPosition=0))
 #above 2 lines replaced by "fit_transform"
