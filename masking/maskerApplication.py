@@ -120,7 +120,7 @@ def writeAppliedMasks (i):
     cropImage.to_filename(filename)
 
 #if you run out of memory change n_jobs to the max number of BOLD files you can store in memory
-Parallel(n_jobs=1, verbose=100)(delayed(writeAppliedMasks)(i) for i in range(len(components_df)))
+Parallel(n_jobs=-1, verbose=100)(delayed(writeAppliedMasks)(i) for i in range(len(components_df)))
 
 
 #%% load image back and plot as a test
