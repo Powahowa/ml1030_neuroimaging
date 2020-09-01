@@ -9,6 +9,8 @@ import pathlib
 import functools
 import time
 import re
+import gc
+from nilearn.input_data import NiftiMasker
 
 # %% [markdown]
 # ## Function to find all the regressor file paths
@@ -75,6 +77,7 @@ sleepdep_map
 
 # %% [markdown]
 # ## Get Dataframe of subject, session, task, path
+@timer
 def get_bids_components(paths):
     components_list = []
     for path in paths:
@@ -92,46 +95,68 @@ def get_bids_components(paths):
                      )
     return df
 
-components_df = get_bids_components(nii_paths)
-components_df
+bids_comp_df = get_bids_components(nii_paths)
+bids_comp_df
 
 # %% [markdown]
 # ## Combine logically sleepdep_map and components_df into 1 dataframe
-final_df = components_df.merge(sleepdep_map, how='left')
+sleep_bids_comb_df = bids_comp_df.merge(sleepdep_map, how='left')
 
 # %% [markdown]
 # ## Response column 'sleepdep' imputed from 'session' 'sleepdep_session'
-for i in range(len(final_df)):
-    if int(final_df['session'].iloc[i]) == int(final_df['sleepdep_session'].iloc[i]):
-        final_df['sleepdep'].iloc[i] = 1
-final_df
+for i in range(len(sleep_bids_comb_df)):
+    if (int(sleep_bids_comb_df['session'].iloc[i]) == 
+            int(sleep_bids_comb_df['sleepdep_session'].iloc[i])):
+        sleep_bids_comb_df['sleepdep'].iloc[i] = 1
+sleep_bids_comb_df
 
 # %% [markdown]
-from nilearn.input_data import NiftiMasker
-masker = NiftiMasker(mask_img='../masking/sub-9001-9072_resamp_intersected_mask.nii.gz', standardize=False)
+masker = NiftiMasker(
+    mask_img='../masking/sub-9001-9072_resamp_intersected_mask.nii.gz', 
+    standardize=False
+    )
 
 # %% [markdown]
-
-
-# %% [markdown]
-final_df["masked array"] = ""
+# sleep_bids_comb_df["masked array"] = ""
 
 # %% [markdown]
-def gen_voxel_df(filepath):
-    f_masked = masker.fit_transform(filepath)
-    fmri_masked = pd.DataFrame(np.reshape(f_masked.ravel(), newshape=[1,-1]))
-    print(fmri_masked.shape)
+@timer
+def gen_one_masked_df(filepath, masker):
+    file_masked = masker.fit_transform(filepath)
+    fmri_masked = pd.DataFrame(np.reshape(
+        file_masked.ravel(), newshape=[1,-1]), dtype='float32')
+    print('Masked shape of raw voxels for file \"' +
+          str(pathlib.Path(filepath).stem) + 
+          '\" is: ' + 
+          str(fmri_masked.shape)) 
     return fmri_masked
 
 # %%
-tmp_list = []
-for i in range(len(final_df)):
-    tmp_list.append(gen_voxel_df(final_df['path'].iloc[i]))
+@timer
+def get_voxels_df(metadata_df, masker):
+    rawvoxels_list = []
+    for i in range(len(metadata_df)-10):
+        rawvoxels_list.append(gen_one_masked_df(metadata_df['path'].iloc[i], masker))
+    tmp_df = pd.concat(rawvoxels_list, ignore_index=True)
+    tmp_df['sleepdep'] = metadata_df['sleepdep']
+    temp_dict = dict((val, str(val)) for val in list(range(len(tmp_df.columns)-1)))
+    return tmp_df.rename(columns=temp_dict, errors='raise')
 
 # %%
-def merge_df(list):
-    return pd.concat(list, ignore_index=True)
-tmp_df = merge_df(tmp_list)
+gc.collect()
+
+# %%
+X = get_voxels_df(sleep_bids_comb_df, masker)
+
+# %%
+Y = sleep_bids_comb_df['sleepdep']
+
+# %%
+# import pyarrow.feather as feather
+# feather.write_feather(X, './rawvoxelsdf.feather')
+
+# %%
+X.to_pickle('./rawvoxelsdf.pkl')
 
 # %% [markdown]
 # Regressors only to be used to further clean up the signal
@@ -156,13 +181,21 @@ common_regressors
 # !!!!!!!!!!!!!!! ONLY USE BELOW WHEN EVERYTHING IS READY !!!!!!!!!!!!!!!!!!!!!!!
 
 # %%
-tmp_df['sleepdep'] = final_df['sleepdep']
+# Load the df for PyCaret
+df = pd.read_pickle('./rawvoxelsdf.pkl')
 
 # %%
-# PyCaret setup
-from pycaret.classification import *
+# PyCaret clustering setup
+
+# ### import clustering module
 from pycaret.clustering import *
-clf1 = setup(data=tmp_df,  target='sleepdep')
+
+# ### intialize the setup
+clf1 = setup(data=df)
+
+# %%
+# ### create k-means model
+kmeans = create_model('kmeans')
 
 # %%
 # PyCaret compare models, uncomment 'compare_models()' to run
@@ -171,4 +204,7 @@ clf1 = setup(data=tmp_df,  target='sleepdep')
 
 # %%
 # PyCaret create and run SVM
+from pycaret.classification import *
+clf1 = setup(data=df,  target='sleepdep')
 svm = create_model('svm')
+# %%
