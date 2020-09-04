@@ -11,11 +11,13 @@ import time
 import re
 import gc
 from nilearn.input_data import NiftiMasker
+import nibabel as nib
+from nilearn import image
 
 # %% [markdown]
-# ## Load configs
+# ## Load configs (all patterns/files/folderpaths)
 import configurations
-configs = configurations.Config('default')
+configs = configurations.Config('sub-xxx-resamp-intersected')
 
 # %% [markdown]
 # ## Function to find all the regressor file paths
@@ -116,51 +118,65 @@ for i in range(len(sleep_bids_comb_df)):
 sleep_bids_comb_df
 
 # %% [markdown]
-masker = NiftiMasker(
-    mask_img=configs.maskDataFile, 
-    standardize=False
-    )
+# ## Load the masker data file to prepare to apply to images
+masker = NiftiMasker(mask_img=configs.maskDataFile, standardize=False)
 
 # %% [markdown]
-# sleep_bids_comb_df["masked array"] = ""
-
-# %% [markdown]
+# ## Helper to generate 1 masked image from a given path and masker and print shape
 @timer
 def gen_one_masked_df(filepath, masker):
     file_masked = masker.fit_transform(filepath)
     fmri_masked = pd.DataFrame(np.reshape(
         file_masked.ravel(), newshape=[1,-1]), dtype='float32')
-    print('Masked shape of raw voxels for file \"' +
-          str(pathlib.Path(filepath).stem) + 
-          '\" is: ' + 
-          str(fmri_masked.shape)) 
+    print('> Shape of raw voxels for file \"' +
+          pathlib.Path(filepath).stem + 
+          '\" is: \n' + 
+          '\t 1-D (Masked)         : ' + str(fmri_masked.shape) + '\n' +
+          '\t 2-D (Masked)         : ' + str(file_masked.shape) + '\n' +
+          '\t 4-D (UnMasked)       : ' + str(nib.load(filepath).header.get_data_shape()) + '\n' +
+          '\t 4-D (UnMasked+Sliced): ' + str(image.index_img(filepath, slice(20,100)).shape)
+          )
     return fmri_masked
 
-# %%
+# %% [markdown]
+# ## Function to generate masked raw voxel df from all images in folder
 @timer
 def get_voxels_df(metadata_df, masker):
     rawvoxels_list = []
-    for i in range(len(metadata_df)-18):
+    print() # Print to add a spacer for aesthetics
+    for i in range(len(metadata_df)):
         rawvoxels_list.append(gen_one_masked_df(metadata_df['path'].iloc[i], masker))
+        print() # Print to add a spacer for aesthetics
     tmp_df = pd.concat(rawvoxels_list, ignore_index=True)
     tmp_df['sleepdep'] = metadata_df['sleepdep']
     temp_dict = dict((val, str(val)) for val in list(range(len(tmp_df.columns)-1)))
     return tmp_df.rename(columns=temp_dict, errors='raise')
 
-# %%
+# %% [markdown]
+# ## Garbage collect
 gc.collect()
 
-# %%
+# %% [markdown]
+# ## Get/Generate raw voxels dataframe from all images with Y column label included
 X = get_voxels_df(sleep_bids_comb_df, masker)
 
-# %%
+# %% [markdown]
+# ## Separately get the Y label
 Y = sleep_bids_comb_df['sleepdep']
+
+# %%
+# NOTE: RUN ABOVE FROM HERE TO TEST FEATURE GENERATION
+# NOTE: RUN ABOVE FROM HERE TO TEST FEATURE GENERATION
+# NOTE: RUN ABOVE FROM HERE TO TEST FEATURE GENERATION
+# NOTE: RUN ABOVE FROM HERE TO TEST FEATURE GENERATION
+# NOTE: RUN ABOVE FROM HERE TO TEST FEATURE GENERATION
 
 # %%
 # import pyarrow.feather as feather
 # feather.write_feather(X, './rawvoxelsdf.feather')
 
-# %%
+# %% [markdown]
+# ## Save raw dataframe with Y column included to a file
 X.to_pickle(configs.rawVoxelFile)
 
 # %% [markdown]
