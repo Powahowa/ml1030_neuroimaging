@@ -60,7 +60,7 @@ nii_paths = find_paths(relDataFolder=configs.dataDir,
                         subj='sub-*',
                         sess='ses-*',
                         func='func',
-                        patt=configs.preprocessedImagePattern)
+                        patt=configs.maskedImagePattern)
 nii_paths
 
 # %% [markdown]
@@ -123,20 +123,26 @@ masker = NiftiMasker(mask_img=configs.maskDataFile, standardize=False)
 
 # %% [markdown]
 # ## Helper to generate 1 masked image from a given path and masker and print shape
+# TODO: FIND OUT WHY MASKER.FIT_TRANSFORM PRODUCES DIFF TOTAL VOXELS THAN IMAGE.GET_DATA
 @timer
-def gen_one_masked_df(filepath, masker):
-    file_masked = masker.fit_transform(filepath)
-    fmri_masked = pd.DataFrame(np.reshape(
-        file_masked.ravel(), newshape=[1,-1]), dtype='float32')
+def gen_one_voxel_df(filepath, masker):
+    masked_array = masker.fit_transform(filepath)
+    sliced_array = image.get_data(image.index_img(filepath, slice(20,60)))
+    masked_sliced_array = masker.fit_transform(image.index_img(filepath, slice(20,60)))
+    # fmri_masked = pd.DataFrame(np.reshape(
+    #     masked_array.ravel(), newshape=[1,-1]), dtype='float32')
+    reshaped_sliced_array = pd.DataFrame(np.reshape(
+        sliced_array.ravel(), newshape=[1,-1]), dtype='float32')
     print('> Shape of raw voxels for file \"' +
           pathlib.Path(filepath).stem + 
           '\" is: \n' + 
-          '\t 1-D (Masked)         : ' + str(fmri_masked.shape) + '\n' +
-          '\t 2-D (Masked)         : ' + str(file_masked.shape) + '\n' +
-          '\t 4-D (UnMasked)       : ' + str(nib.load(filepath).header.get_data_shape()) + '\n' +
-          '\t 4-D (UnMasked+Sliced): ' + str(image.index_img(filepath, slice(20,100)).shape)
+          '\t 1-D (UnMasked+Sliced): ' + str(reshaped_sliced_array.shape) + '\n' +
+          '\t 2-D (Masked+UnSliced): ' + str(masked_array.shape) + '\n' +
+          '\t 2-D (Masked+Sliced): ' + str(masked_sliced_array.shape) + '\n' +
+          '\t 4-D (Raw header)     : ' + str(nib.load(filepath).header.get_data_shape()) + '\n' +
+          '\t 4-D (UnMasked+Sliced): ' + str(sliced_array.shape)
           )
-    return fmri_masked
+    return reshaped_sliced_array
 
 # %% [markdown]
 # ## Function to generate masked raw voxel df from all images in folder
@@ -145,7 +151,7 @@ def get_voxels_df(metadata_df, masker):
     rawvoxels_list = []
     print() # Print to add a spacer for aesthetics
     for i in range(len(metadata_df)):
-        rawvoxels_list.append(gen_one_masked_df(metadata_df['path'].iloc[i], masker))
+        rawvoxels_list.append(gen_one_voxel_df(metadata_df['path'].iloc[i], masker))
         print() # Print to add a spacer for aesthetics
     tmp_df = pd.concat(rawvoxels_list, ignore_index=True)
     tmp_df['sleepdep'] = metadata_df['sleepdep']
