@@ -15,7 +15,7 @@ from nilearn.input_data import NiftiMasker
 import matplotlib as plt
 plt.use('Agg')#needed because we don't have an X window system on the SCC
 
-from pycaret.clustering import *
+from pycaret.classification import *
 
 # %%
 # Load the df for PyCaret
@@ -41,10 +41,10 @@ df = pd.read_pickle('rawvoxelsdf.pkl')
 
 # %%
 # PyCaret create and run SVM
-from pycaret.clustering import *
-df.drop('sleepdep', axis=1)
-clf1 = setup(data=df, silent=True)
-kmeans = create_model('kmeans')
-plot_model(kmeans, save=True)
+from pycaret.classification import *
+#df.drop('sleepdep', axis=1)
+clf1 = setup(data=df, target='sleepdep', silent=True, n_jobs=-1)
+lr = create_model('lr')
+plot_model(lr, save=True)
 # %%
 logs = get_logs(save=True)
