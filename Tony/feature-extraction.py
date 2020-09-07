@@ -126,23 +126,27 @@ masker = NiftiMasker(mask_img=configs.maskDataFile, standardize=False)
 # TODO: FIND OUT WHY MASKER.FIT_TRANSFORM PRODUCES DIFF TOTAL VOXELS THAN IMAGE.GET_DATA
 @timer
 def gen_one_voxel_df(filepath, masker):
-    masked_array = masker.fit_transform(filepath)
-    sliced_array = image.get_data(image.index_img(filepath, slice(20,60)))
-    masked_sliced_array = masker.fit_transform(image.index_img(filepath, slice(20,60)))
+    # test_array = masker.transform(image.index_img(filepath, slice(20,60)))
+    masked_array = masker.transform(image.index_img(filepath, slice(20,60)))
+    # sliced_array = image.get_data(image.index_img(filepath, slice(20,60)))
+    # masked_sliced_array = masker.fit_transform(image.index_img(filepath, slice(20,60)))
     # fmri_masked = pd.DataFrame(np.reshape(
     #     masked_array.ravel(), newshape=[1,-1]), dtype='float32')
-    reshaped_sliced_array = pd.DataFrame(np.reshape(
-        sliced_array.ravel(), newshape=[1,-1]), dtype='float32')
+    reshaped_array = pd.DataFrame(np.reshape(
+        masked_array.ravel(), newshape=[1,-1]), dtype='float32')
     print('> Shape of raw voxels for file \"' +
           pathlib.Path(filepath).stem + 
           '\" is: \n' + 
-          '\t 1-D (UnMasked+Sliced): ' + str(reshaped_sliced_array.shape) + '\n' +
-          '\t 2-D (Masked+UnSliced): ' + str(masked_array.shape) + '\n' +
-          '\t 2-D (Masked+Sliced): ' + str(masked_sliced_array.shape) + '\n' +
+          '\t 1-D (UnMasked+Sliced): ' + str(reshaped_array.shape) + '\n' +
+          '\t 2-D (UnMasked+Sliced): ' + str(masked_array.shape) + '\n' +
+        #   '\t 2-D (Masked+Sliced)  : ' + str(masked_sliced_array.shape) + '\n' +
           '\t 4-D (Raw header)     : ' + str(nib.load(filepath).header.get_data_shape()) + '\n' +
-          '\t 4-D (UnMasked+Sliced): ' + str(sliced_array.shape)
-          )
-    return reshaped_sliced_array
+        #   '\t 4-D (UnMasked+Sliced): ' + str(sliced_array.shape) + '\n' + ""
+        #   '\t 4-D (test): ' + str(test_array.shape)
+        ''  
+        )
+
+    return reshaped_array
 
 # %% [markdown]
 # ## Function to generate masked raw voxel df from all images in folder
@@ -202,6 +206,52 @@ common_regressors
 # %%
 # NOTE:
 # !!!!!!!!!!!!!!! ONLY USE BELOW WHEN EVERYTHING IS READY !!!!!!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!!!!!! ONLY USE BELOW WHEN EVERYTHING IS READY !!!!!!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!!!!!! ONLY USE BELOW WHEN EVERYTHING IS READY !!!!!!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!!!!!! ONLY USE BELOW WHEN EVERYTHING IS READY !!!!!!!!!!!!!!!!!!!!!!!
+# !!!!!!!!!!!!!!! ONLY USE BELOW WHEN EVERYTHING IS READY !!!!!!!!!!!!!!!!!!!!!!!
+from sklearn.svm import SVC
+from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
+from sklearn.pipeline import Pipeline
+
+# Pipeline: first taking the KBest features and then passing to SVC.
+pipeline = Pipeline([
+    ('anova', SelectKBest(f_classif, k=50000)),
+    ('svc', SVC(kernel='linear'))
+])
+pipeline.steps
+
+svc = pipeline
+# svc_ovo = OneVsOneClassifier(pipeline)
+# No need for OneVsRest because it's binary classification
+# svc_ovr = OneVsRestClassifier(pipe)
+
+# %% [markdown]
+# ### Normalize X
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler() 
+X_array = scaler.fit_transform(X.drop('sleepdep', axis=1))
+del(X)
+gc.collect()
+
+# %%
+from sklearn.model_selection import cross_val_score
+
+cv_scores_svc = cross_val_score(svc, X_array, Y, cv=2, verbose=2, n_jobs=-1)
+# cv_scores_ovo = cross_val_score(svc_ovo, X_array, Y, cv=5, verbose=1, n_jobs=1)
+# No need for OneVsRest because it's binary classification
+# cv_scores_ovr = cross_val_score(svc_ovr, X_array, Y, cv=5, verbose=1, n_jobs=1)
+
+print('SVC Mean CV Score:', cv_scores_svc.mean())
+# print('OneVsOne Mean CV Score:', cv_scores_ovo.mean())
+# No need for OneVsRest because it's binary classification
+# print('OneVsRest Mean CV Score:', cv_scores_ovr.mean())
+
+# %%
+# NOTE:
+# !!!!!!!!!!!!!!! USING PYCARET BELOW !!!!!!!!!!!!!!!!!!!!!!!
 # !!!!!!!!!!!!!!! ONLY USE BELOW WHEN EVERYTHING IS READY !!!!!!!!!!!!!!!!!!!!!!!
 # !!!!!!!!!!!!!!! ONLY USE BELOW WHEN EVERYTHING IS READY !!!!!!!!!!!!!!!!!!!!!!!
 # !!!!!!!!!!!!!!! ONLY USE BELOW WHEN EVERYTHING IS READY !!!!!!!!!!!!!!!!!!!!!!!
