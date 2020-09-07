@@ -173,14 +173,14 @@ if savePlots == True:
     plt.close()
 plt = nilearn.plotting.plot_img(arrowsCrop, cut_coords=[0,0,0], title="Masked arrows Image")
 if savePlots == True:
-    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected_v2)_bold.png')
+    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected)_bold.png')
     plt.close()
 
 #faces
 cropMask = NiftiMasker(mask_img="final_resamp_intersected_mask_v2.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="faces", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="faces", indexPosition=0))
-#above 2 lines replaced by "transform"
+#above 2 lines replaced by "fit_transform"
 maskedArray = cropMask.fit_transform(loadSlice(task="faces", indexPosition=0))
 facesCrop = cropMask.inverse_transform(X=maskedArray)
 #this is just a slice, no point saving it to disk
@@ -192,14 +192,14 @@ if savePlots == True:
     plt.close()
 plt = nilearn.plotting.plot_img(facesCrop, cut_coords=[0,0,0], title="Masked faces Image")
 if savePlots == True:
-    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected_v2)_bold.png')
+    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-faces_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected)_bold.png')
     plt.close()
 
 #hands
 cropMask = NiftiMasker(mask_img="final_resamp_intersected_mask_v2.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="hands", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="hands", indexPosition=0))
-#above 2 lines replaced by "transform"
+#above 2 lines replaced by "fit_transform"
 maskedArray = cropMask.fit_transform(loadSlice(task="hands", indexPosition=0))
 handsCrop = cropMask.inverse_transform(X=maskedArray)
 #this is just a slice, no point saving it to disk
@@ -211,14 +211,14 @@ if savePlots == True:
     plt.close()
 plt = nilearn.plotting.plot_img(handsCrop, cut_coords=[0,0,0], title="Masked hands Image")
 if savePlots == True:
-    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-hands_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected_v2)_bold.png')
+    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-hands_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected)_bold.png')
     plt.close()
 
 #rest
 cropMask = NiftiMasker(mask_img="final_resamp_intersected_mask_v2.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="rest", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="rest", indexPosition=0))
-#above 2 lines replaced by "transform"
+#above 2 lines replaced by "fit_transform"
 maskedArray = cropMask.fit_transform(loadSlice(task="rest", indexPosition=0))
 restCrop = cropMask.inverse_transform(X=maskedArray)
 #this is just a slice, no point saving it to disk
@@ -230,14 +230,14 @@ if savePlots == True:
     plt.close()
 plt = nilearn.plotting.plot_img(restCrop, cut_coords=[0,0,0], title="Masked rest Image")
 if savePlots == True:
-    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-rest_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected_v2)_bold.png')
+    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-rest_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected)_bold.png')
     plt.close()
 
 #sleepiness
 cropMask = NiftiMasker(mask_img="final_resamp_intersected_mask_v2.nii.gz", standardize=False)
 #fitted = cropMask.fit(loadSlice(task="sleepiness", indexPosition=0))
 #maskedArray = cropMask.transform(loadSlice(task="sleepiness", indexPosition=0))
-#above 2 lines replaced by "transform"
+#above 2 lines replaced by "fit_transform"
 maskedArray = cropMask.fit_transform(loadSlice(task="sleepiness", indexPosition=0))
 sleepinessCrop = cropMask.inverse_transform(X=maskedArray)
 #this is just a slice, no point saving it to disk
@@ -249,6 +249,6 @@ if savePlots == True:
     plt.close()
 plt = nilearn.plotting.plot_img(sleepinessCrop, cut_coords=[0,0,0], title="Masked sleepiness Image")
 if savePlots == True:
-    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected_v2)_bold.png')
+    plt.savefig(saveDir + 'plots/masking/final_resamp_intersected_v2/sub-9001_ses-1_task-sleepiness_space-MNI152NLin2009cAsym_desc-preproc_masked_(final_resamp_intersected)_bold.png')
     plt.close()
 # %%

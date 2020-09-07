@@ -47,29 +47,31 @@ def find_paths(relDataFolder, subj, sess, func, patt):
 
 # %%
 
-#Find all the BOLD NII file paths [LOCAL]
-nii_paths = find_paths(relDataFolder='../data/preprocessed',
-                        subj='sub-*',
-                        sess='ses-*',
-                        func='func',
-                        patt="*MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
-originalDataPath = "..\\\\data\\\\preprocessed\\\\"
-maskedDataPath = ".\\\\masked_BOLD_images\\\\"
-pathSep = "\\"
-
-
-# #[CAMH SCC]
 # #Find all the BOLD NII file paths [LOCAL]
-# nii_paths = find_paths(relDataFolder='/external/rprshnas01/netdata_kcni/edlab/ds000201_preproc/data/derived/fmriprep',
+# nii_paths = find_paths(relDataFolder='../data/preprocessed',
 #                         subj='sub-*',
 #                         sess='ses-*',
 #                         func='func',
 #                         patt="*MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
-# originalDataPath = "/external/rprshnas01/netdata_kcni/edlab/ds000201_preproc/data/derived/fmriprep/"
-# maskedDataPath = "/external/rprshnas01/netdata_kcni/edlab/temp_dataknights/masked_BOLD_images/"
-# pathSep = "/"
+# #[LOCAL]
+# originalDataPath = "..\\\\data\\\\preprocessed\\\\"
+# maskedDataPath = ".\\\\masked_BOLD_images\\\\"
+# pathSep = "\\"
 
+
+#[CAMH SCC]
+#Find all the BOLD NII file paths [LOCAL]
+nii_paths = find_paths(relDataFolder='/external/rprshnas01/netdata_kcni/edlab/ds000201_preproc/data/derived/fmriprep',
+                        subj='sub-*',
+                        sess='ses-*',
+                        func='func',
+                        patt="*MNI152NLin2009cAsym_desc-preproc_bold.nii.gz")
 nii_paths
+
+#[CAMH SCC]
+originalDataPath = "/external/rprshnas01/netdata_kcni/edlab/ds000201_preproc/data/derived/fmriprep/"
+maskedDataPath = "/external/rprshnas01/netdata_kcni/edlab/temp_dataknights/masked_BOLD_images/"
+pathSep = "/"
 # %%
 # Prep for next cell
 # session_info_df = pd.read_csv(
@@ -127,14 +129,14 @@ components_df.to_csv("components_df.csv")
 
 def writeAppliedMasks (i):
     cropMask = NiftiMasker(mask_img="./finalMask/final_resamp_intersected_mask.nii.gz", standardize=False)
-    cropImage = cropMask.inverse_transform(X=cropMask.transform(image.load_img(components_df.path.iloc[i])))
+    cropImage = cropMask.inverse_transform(X=cropMask.fit_transform(image.load_img(components_df.path.iloc[i])))
 
     os.makedirs([components_df['new_directory'].iloc[i]].__str__()[2:-2], exist_ok=True)
     filename = components_df['new_directory'].iloc[i] + pathSep + components_df['new_filename'].iloc[i][:-7] + "_masked_(final_resamp_intersected)_bold.nii.gz"
     cropImage.to_filename(filename)
 
 #if you run out of memory change n_jobs to the max number of BOLD files you can store in memory
-#Parallel(n_jobs=-1, verbose=100)(delayed(writeAppliedMasks)(i) for i in range(len(components_df)))
+Parallel(n_jobs=-1, verbose=100)(delayed(writeAppliedMasks)(i) for i in range(len(components_df)))
 
 
 #%% load image back and plot as a test
@@ -154,22 +156,23 @@ def writeAppliedMasks (i):
 #old inefficient version, next 4 lines
 # currentImage = image.load_img(components_df.path.iloc[0])
 # cropMask = NiftiMasker(mask_img="final_resamp_intersected_mask.nii.gz", standardize=False)
-# maskedArray = cropMask.transform(currentImage)
+# maskedArray = cropMask.fit_transform(currentImage)
 # cropImage = cropMask.inverse_transform(X=maskedArray)
 
-cropMask = NiftiMasker(mask_img="final_resamp_intersected_mask.nii.gz", standardize=False)
-cropImage = cropMask.inverse_transform(X=cropMask.transform(image.load_img(components_df.path.iloc[0])))
+# cropMask = NiftiMasker(mask_img="final_resamp_intersected_mask.nii.gz", standardize=False)
+# cropImage = cropMask.inverse_transform(X=cropMask.fit_transform(image.load_img(components_df.path.iloc[0])))
 
-#Tony is going to have a heart attack if he sees this. Makes the new directory but it needs a string so we cast it, then we remove the first 2 and last 2 chars to remove the square brackets and quotes
-os.makedirs([components_df['new_directory'].iloc[0]].__str__()[2:-2])
-filename = components_df['new_directory'].iloc[0] + pathSep + components_df['new_filename'].iloc[0][:-7] + "_masked_(final_resamp_intersected)_bold.nii.gz"
-cropImage.to_filename(filename)
 
-# load image back and plot as a test
+# #Tony is going to have a heart attack if he sees this. Makes the new directory but it needs a string so we cast it, then we remove the first 2 and last 2 chars to remove the square brackets and quotes
+# os.makedirs([components_df['new_directory'].iloc[0]].__str__()[2:-2])
+# filename = components_df['new_directory'].iloc[0] + pathSep + components_df['new_filename'].iloc[0][:-7] + "_masked_(final_resamp_intersected)_bold.nii.gz"
+# cropImage.to_filename(filename)
 
-testFromDisk = image.index_img(filename, 0)
+# # load image back and plot as a test
 
-# #using load image
-plt = nilearn.plotting.plot_img(testFromDisk, cut_coords=[0,0,0], title="Cropped (Mask Applied) Test Image [FROM FILE]")
+# testFromDisk = image.index_img(filename, 0)
+
+# # #using load image
+# plt = nilearn.plotting.plot_img(testFromDisk, cut_coords=[0,0,0], title="Cropped (Mask Applied) Test Image [FROM FILE]")
 
 # %%
