@@ -17,4 +17,7 @@ print('Raw voxel df filename: \n' + configs.rawVoxelFile + '\n')
 print('Testing subject dir: \n' + configs.subjectDir + '\n')
 print('Testing session dir: \n' + configs.sessionDir + '\n')
 print('Testing save dir: \n' + configs.saveDir + '\n')
+print('Start of time slice: \n' + configs.startSlice + '\n')
+print('End of time slice: \n' + configs.endSlice + '\n')
+
 # %%

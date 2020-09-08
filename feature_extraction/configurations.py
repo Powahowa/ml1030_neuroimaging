@@ -14,9 +14,9 @@ class Config:
         parser = configparser.ConfigParser()
 
         if os.name == 'nt':
-            configFile = './experiments/' + experimentName + '/configs.ini'
+            configFile = '../experiments/' + experimentName + '/configs.ini'
         else:
-            configFile = './experiments/' + experimentName + '/configsSCC.ini'
+            configFile = '../experiments/' + experimentName + '/configsSCC.ini'
         parser.read(pathlib.Path(configFile))
 
         self.dataDir = parser['paths']['preprocessedDataPath']
@@ -30,4 +30,6 @@ class Config:
         self.subjectDir = parser['testing']['subjectDir']
         self.sessionDir = parser['testing']['sessionDir']
         self.saveDir = parser['testing']['saveDir']
+        self.startSlice = int(parser['constants']['startSlice'])
+        self.endSlice = int(parser['constants']['endSlice'])
 # %%
