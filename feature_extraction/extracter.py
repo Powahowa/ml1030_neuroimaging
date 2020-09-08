@@ -147,3 +147,6 @@ scores_std = [np.std(scores[kind_of_matrix_correlation]) for kind_of_matrix_corr
 
 # output results into a df
 results_df = pd.DataFrame(list(zip(kinds_of_matrix_correlation, mean_scores, scores_std)), columns = ['Kind of correlation', 'mean_scores', 'scores_std'])
+
+# print results of df to a csv
+results_df.to_csv('test_classification_of_functional_connectivity_between_roi_results.csv')
