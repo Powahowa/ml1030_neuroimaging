@@ -18,7 +18,7 @@ from joblib import Parallel, delayed
 # %% [markdown]
 # ## Load configs (all patterns/files/folderpaths)
 import configurations
-configs = configurations.Config('sub-xxx-resamp-intersected')
+configs = configurations.Config('sub-xxx-resamp-intersected_par')
 
 # %% [markdown]
 # ## Function to find all the regressor file paths
@@ -185,7 +185,7 @@ def get_voxels_df(metadata_df, masker, start, end):
     #     rawvoxels_list.append(gen_one_voxel_df(metadata_df['path'].iloc[i], masker, start, end))
     #     print() # Print to add a spacer for aesthetics
     
-    Parallel(n_jobs=-1, verbose=100)(delayed(gen_one_voxel_df)(metadata_df['path'].iloc[i], masker, start, end) for i in range(len(metadata_df)))
+    rawvoxels_list.append(Parallel(n_jobs=-1, verbose=100)(delayed(gen_one_voxel_df)(metadata_df['path'].iloc[i], masker, start, end) for i in range(len(metadata_df))))
 
     print() # Print to add a spacer for aesthetics
     tmp_df = pd.concat(rawvoxels_list, ignore_index=True)
