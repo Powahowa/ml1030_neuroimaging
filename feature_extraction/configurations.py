@@ -16,7 +16,7 @@ class Config:
         if os.name == 'nt':
             configFile = '../experiments/' + experimentName + '/configs.ini'
         else:
-            configFile = '../experiments/' + experimentName + '/configsSCC.ini'
+            configFile = './experiments/' + experimentName + '/configsSCC.ini'
         parser.read(pathlib.Path(configFile))
 
         self.dataDir = parser['paths']['preprocessedDataPath']
