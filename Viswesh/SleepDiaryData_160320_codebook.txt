@@ -1,0 +1,41 @@
+id				participant id, generated at random in 9000-9100 range
+session				first or second session
+Sl_cond				randomisation order, 1 means participant was sleep deprived at first session 
+index				order of nights, 0 is night before scanning
+lights_off			time for lights out given in 24-hour clock, data were entered in a spreadsheet program that removed leading zeros so data with fewer than 4 digits should be padded, i.e. "49" should be "0049" meaning "00:49"
+latency_min			sleep latency in minutes
+wake_time			wake-up time, should be padded with zeros like "lights_off"
+rise_time	 		rise time, should be padded with zeros like "lights_off"
+kss_bed_time			Karolinska Sleepiness Scale rating when going to sleep
+kss_rise_time			Karolinska Sleepiness Scale rating when waking up
+worried_bed_time		rated worry/stress at bedtime, 1-5 where 1 is worst
+diff_falling_asleep		rated difficulty in falling asleep, 1-5 where 1 is worst
+sleep_quality			rated sleep quality, 1-5 where 5 is best
+disturbed_sleep			rated sleep disturbance, 1-5 where 5 is best
+premature_awakening		rated premature awakening, 1-5 where 1 is much too early
+number_awakening		rated number of premature awakenings, 0-5 or >5
+wake_time_hours			total wake time during sleep, hours
+wake_time_min			total wake time during sleep, minutes, add to "wake_time_hours" to get total wake time
+enough_sleep			rated sufficiency of sleep length, 1-5 where 5 is best
+deep_sleep			rated sleep depth, 1-5 where 5 is deepest
+well_rested			rated restitution after sleep, 1-5 where 5 is best
+ease_of_awakening		rated ease of getting up, 1-5 where 5 is easiest
+alcohol				alcohol intake last night, 1-4 where 1 is nothing and 4 is quite a lot
+coffee				coffee intake last day, number of cups
+no_medicine			used no drugs yesterday (phrased to mean prescription drugs)
+sleeping_pill			used sleeping pill yesterday
+sleeping_pill_name		name of sleeping pill, participants' original responses coded, generic names can be found e.g. at http://www.fass.se
+sleeping_pill_mg		dose of sleeping pill
+other				used other drug yesterday
+other_name			name of other drug, participants' original responses coded, generic names can be found e.g. at http://www.fass.se
+dreams				recall dreams, 0/1 meaning no/yes
+pleasant_dream			rated pleasantness of dreams (if applicable), 1-5 where 1 is most pleasant
+up_from_bed			rating whether participant was out of bed for more than 15 minutes during sleep period, 0/1 meaning no/yes
+up_from_time1			start time of first episode of getting up, should be padded with zeros like "lights_off"
+up_to_time1			end time of first episode of getting up, should be padded with zeros like "lights_off"
+up_from_time2			start time of second episode of getting up, should be padded with zeros like "lights_off"
+up_to_time2			end time of second episode of getting up, should be padded with zeros like "lights_off"
+affected_by_sleep_recording	rated impact of sleep recording on sleep, 1-5 where 1 is highest negative impact on sleep
+how_did_you_sleep		VAS scale for sleep quality, 1-10 where 1 is best
+
+Original form is available (in Swedish) at https://github.com/GNilsonne/SleepyBrain-StimulusPresentation/blob/master/RatingScales/SleepDiary
