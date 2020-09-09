@@ -19,7 +19,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import label_binarize
 from sklearn.metrics import fbeta_score, make_scorer
 from sklearn.metrics import balanced_accuracy_score, accuracy_score, \
-        precision_score, recall_score, f1_score, roc_auc_score, matthews_corrcoef
+        precision_score, recall_score, f1_score, roc_auc_score
 from sklearn.model_selection import cross_validate
 from mlxtend.plotting import plot_learning_curves
 import matplotlib.pyplot as plt
@@ -33,7 +33,7 @@ from sklearn.model_selection import train_test_split
 import configurations
 configs = configurations.Config('sub-xxx-resamp-intersected')
 
-X = pd.read_pickle(configs.rawVoxelFile)
+df = pd.read_pickle(configs.rawVoxelFile)
 
 # %%
 # Pipeline: first taking the KBest features and then passing to SVC.
@@ -48,17 +48,18 @@ svc = pipeline
 # %% [markdown]
 # ### Normalize X
 scaler = MinMaxScaler() 
-y = X['sleepdep']
-X_array = scaler.fit_transform(X.drop('sleepdep', axis=1))
-df2 = pd.DataFrame(X_array)
-df2['sleepdep'] = X['sleepdep']
+y = pd.DataFrame(df['sleepdep'])
+X = pd.DataFrame(df.drop('sleepdep', axis=1))
+# X_array = scaler.fit_transform(X)
+# df2 = pd.DataFrame(X_array)
+# df2['sleepdep'] = df['sleepdep']
 
 # %%
-from sklearn.model_selection import cross_val_score
+# from sklearn.model_selection import cross_val_score
 
-cv_scores_svc = cross_val_score(svc, X_array, y, cv=2, verbose=2, n_jobs=-1)
+# cv_scores_svc = cross_val_score(svc, X_array, y, cv=2, verbose=2, n_jobs=-1)
 
-print('SVC Mean CV Score:', cv_scores_svc.mean())
+# print('SVC Mean CV Score:', cv_scores_svc.mean())
 
 # %% [markdown]
 # ## Try traditional ML models
@@ -79,22 +80,24 @@ model_namelist = ['Logistic Regression',
                   'SVM/Linear SVC',
                   'Bagging-DT'
                   ]
-scoring = {'precision': make_scorer(precision_score, average='binary'), 
-           'recall': make_scorer(recall_score, average='binary'), 
+scoring = {'precision': make_scorer(precision_score), 
+           'recall': make_scorer(recall_score), 
             'accuracy': make_scorer(accuracy_score), 
-           'f1': make_scorer(f1_score, average='binary'),
-           'roc_auc': make_scorer(roc_auc_score, average='binary'),
-           'mcc': make_scorer(matthews_corrcoef)
-          }
-
-cv_result_entries = []
-i = 0    
+           'f1': make_scorer(f1_score),
+           'roc_auc': make_scorer(roc_auc_score),
+           # 'mcc': make_scorer(matthews_corrcoef)
+          } 
 
 # %%
 X_train, X_test, y_train, y_test = train_test_split(X, y, \
     test_size=0.20, random_state=0)
+X_train = pd.DataFrame(scaler.fit_transform(X_train))
+X_test = pd.DataFrame(scaler.fit_transform(X_test))
 
-# ### Loop cross validation through various models and generate results
+# %%
+# ### Loop cross validation through various models and generate results\
+cv_result_entries = []
+i = 0 
 for mod in models:
     metrics = cross_validate(
         mod,
@@ -113,9 +116,11 @@ cv_results_df = pd.DataFrame(cv_result_entries)
 
 # %% [markdown]
 # ### Misclassification Errors
+# NOTE: NOT WORKING!? ValueError: 
+# This solver needs samples of at least 2 classes in the data, 
+# but the data contains only one class: 0
 i=0
 for model in models:
-
     plot_learning_curves(X_train, y_train, X_test, y_test, model)
     plt.title('Learning Curve for ' + model_namelist[i], fontsize=14)
     plt.xlabel('Training Set Size (%)', fontsize=12)
@@ -128,7 +133,6 @@ for model in models:
 y_test_pred = []
 for model in models:
     y_test_pred.append(model.predict(X_test))
-
 
 # %% [markdown]
 # ### Graph metrics
