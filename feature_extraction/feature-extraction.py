@@ -181,11 +181,11 @@ def get_voxels_df(metadata_df, masker, start, end):
     print() # Print to add a spacer for aesthetics
 
     #below has been parallelized
-    # for i in range(len(metadata_df)):
-    #     rawvoxels_list.append(gen_one_voxel_df(metadata_df['path'].iloc[i], masker, start, end))
-    #     print() # Print to add a spacer for aesthetics
+    for i in range(len(metadata_df)):
+        rawvoxels_list.append(gen_one_voxel_df(metadata_df['path'].iloc[i], masker, start, end))
+        print() # Print to add a spacer for aesthetics
     
-    rawvoxels_list.append(Parallel(n_jobs=-1, verbose=100)(delayed(gen_one_voxel_df)(metadata_df['path'].iloc[i], masker, start, end) for i in range(len(metadata_df))))
+    # rawvoxels_list.append(Parallel(n_jobs=-1, verbose=100)(delayed(gen_one_voxel_df)(metadata_df['path'].iloc[i], masker, start, end) for i in range(len(metadata_df))))
 
     print() # Print to add a spacer for aesthetics
     tmp_df = pd.concat(rawvoxels_list, ignore_index=True)
