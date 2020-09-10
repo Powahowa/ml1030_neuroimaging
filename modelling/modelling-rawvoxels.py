@@ -21,7 +21,7 @@ from sklearn.metrics import fbeta_score, make_scorer
 from sklearn.metrics import balanced_accuracy_score, accuracy_score, \
         precision_score, recall_score, f1_score, roc_auc_score
 from sklearn.model_selection import cross_validate
-from mlxtend.plotting import plot_learning_curves
+# from mlxtend.plotting import plot_learning_curves
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
@@ -35,16 +35,6 @@ configs = configurations.Config('sub-xxx-resamp-intersected')
 
 df = pd.read_pickle(configs.rawVoxelFile)
 
-# %%
-# Pipeline: first taking the KBest features and then passing to SVC.
-pipeline = Pipeline([
-    ('anova', SelectKBest(f_classif, k=50000)),
-    ('svc', SVC(kernel='linear'))
-])
-pipeline.steps
-
-svc = pipeline
-
 # %% [markdown]
 # ### Normalize X
 scaler = MinMaxScaler() 
@@ -52,34 +42,25 @@ y = pd.DataFrame(df['sleepdep'])
 # y = ["WideAwake" if x == 0 else "Sleepy" for x in y['sleepdep']]
 X = pd.DataFrame(df.drop('sleepdep', axis=1))
 X = pd.DataFrame(scaler.fit_transform(X))
-# X_array = scaler.fit_transform(X)
-# df2 = pd.DataFrame(X_array)
-# df2['sleepdep'] = df['sleepdep']
-
-# %%
-# from sklearn.model_selection import cross_val_score
-
-# cv_scores_svc = cross_val_score(svc, X, y, cv=2, verbose=2, n_jobs=-1)
-
-# print('SVC Mean CV Score:', cv_scores_svc.mean())
 
 # %% [markdown]
 # ## Try traditional ML models
 # ### Define and train the models
 models = [  
-    LogisticRegression(random_state=1),
+    LogisticRegression(random_state=1, n_jobs=-1),
     # KNeighborsClassifier(n_neighbors=10, n_jobs=-1),
     # DecisionTreeClassifier(),
     # GaussianNB(),
-    LinearSVC(),
+    # LinearSVC(),
     # BaggingClassifier(base_estimator=\
     #     DecisionTreeClassifier(max_leaf_nodes=2620), n_estimators=100, n_jobs=-1)
 ]
-model_namelist = ['Logistic Regression',
+model_namelist = [
+                'Logistic Regression',
                 #   'KNeighbors',
                 #   'Decision Tree',
                 #   'GaussianNB', 
-                  'SVM/Linear SVC',
+                #   'SVM/Linear SVC',
                 #   'Bagging-DT'
                   ]
 scoring = {'precision': make_scorer(precision_score, average='binary'), 
@@ -93,8 +74,8 @@ scoring = {'precision': make_scorer(precision_score, average='binary'),
 # %%
 X_train, X_test, y_train, y_test = train_test_split(X, y, \
     test_size=0.20, random_state=0)
-# X_train = pd.DataFrame(scaler.fit_transform(X_train))
-# X_test = pd.DataFrame(scaler.fit_transform(X_test))
+X_train = pd.DataFrame(scaler.fit_transform(X_train))
+X_test = pd.DataFrame(scaler.fit_transform(X_test))
 
 # %%
 # ### Loop cross validation through various models and generate results\
@@ -116,7 +97,9 @@ for mod in models:
     i += 1
 cv_results_df = pd.DataFrame(cv_result_entries)
 cv_results_df.columns = ['algo', 'cv fold', 'metric', 'value']
-cv_results_df.to_csv('rawvoxels_cv_results_df.csv')
+
+# %%
+cv_results_df.to_csv('rawVoxels_cv_results_df.csv')
 
 # %% [markdown]
 # ### Plot cv results
@@ -141,6 +124,7 @@ for metric_name, metric in zip(['fit_time',
     plt.xticks([0, 1, 2, 3, 4])
     plt.xticks(rotation=45)
     plt.show()
+    plt.savefig(configs.saveDir + 'rawVoxels_cv_results.png')
 
 # %% [markdown]
 # ### Misclassification Errors
@@ -189,7 +173,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Fit Time score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.saveDir)
+plt.savefig(configs.saveDir + 'rawVoxels_fit_time.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_score_time)
@@ -199,7 +183,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Score Time score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.saveDir)
+plt.savefig(configs.saveDir + 'rawVoxels_score_time.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_accuracy)
@@ -209,7 +193,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Accuracy score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.saveDir)
+plt.savefig(configs.saveDir + 'rawVoxels_accuracy.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_f1)
@@ -219,7 +203,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('F1 score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.saveDir)
+plt.savefig(configs.saveDir + 'rawVoxels_f1_score.png')
 
 # plt.figure(figsize=fig_size_tuple)
 # sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_f2)
@@ -238,7 +222,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Precision score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.saveDir)
+plt.savefig(configs.saveDir + 'rawVoxels_precision.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_recall)
@@ -258,7 +242,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('ROC-AUC score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.saveDir)
+plt.savefig(configs.saveDir + 'rawVoxels_roc_auc.png')
 
 # %% [markdown]
 # ### Confusion Matrix
@@ -273,6 +257,7 @@ for _ in models:
     plt.title('Confusion Matrix for ' + model_namelist[i], fontsize=14)
     sns.heatmap(cm_df, annot=True, fmt='.6g', annot_kws={"size": 10}, cmap='Reds')
     plt.show()
+    plt.savefig(configs.saveDir + 'rawVoxels_confusion_matrix.png')
     i += 1
 
 # %%
