@@ -8,7 +8,6 @@ class Config:
     # Class that contains all required configurations
     __doc__ = 'Class that contains all required configurations'
     def __init__(self, experimentName):
-
         self.experimentName = experimentName
         
         parser = configparser.ConfigParser()
@@ -27,6 +26,7 @@ class Config:
         self.intermediateDataPath = parser['paths']['intermediateDataPath']
         self.participantsSummaryFile = parser['files']['participantsSummaryFile']
         self.rawVoxelFile = parser['files']['rawVoxelFile']
+        self.rawFunctionalConnectivityFile = parser['files']['rawFunctionalConnectivityFile']
         self.subjectDir = parser['testing']['subjectDir']
         self.sessionDir = parser['testing']['sessionDir']
         self.saveDir = parser['testing']['saveDir']

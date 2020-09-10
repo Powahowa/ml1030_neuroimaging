@@ -201,6 +201,10 @@ cv = StratifiedShuffleSplit(n_splits=24, random_state=0, test_size=5)
 # convert list into numpy array
 time_series_numpy_array = np.asarray(time_series_list)
 
+# convert tim_series_numpy_array to Dataframe
+time_series_df = pd.DataFrame(time_series_numpy_array, columns=['time_series_list'])
+time_series_df.to_pickle(configs.rawFunctionalConnectivityFile)
+
 # scores
 scores = {}
 
