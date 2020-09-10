@@ -230,7 +230,7 @@ def createConnectivityMeasure(train, test):
 
 for kind_of_matrix_correlation in kinds_of_matrix_correlation:
     scores[kind_of_matrix_correlation] = []
-    score = Parallel(n_jobs=4, verbose=50)(delayed(createConnectivityMeasure)(train, test) for train, test in cv.split(time_series_numpy_array, classes))
+    score = Parallel(n_jobs=-1, verbose=50)(delayed(createConnectivityMeasure)(train, test) for train, test in cv.split(time_series_numpy_array, classes))
     scores[kind_of_matrix_correlation].append(score)
   
 # calculate mean accuracy scores, and their standard deviations
