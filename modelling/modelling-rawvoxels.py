@@ -46,7 +46,6 @@ y = pd.DataFrame(df['sleepdep'])
 X = pd.DataFrame(df.drop('sleepdep', axis=1))
 X = pd.DataFrame(scaler.fit_transform(X))
 
-
 # %% [markdown]
 # ## Try traditional ML models
 # ### Define and train the models
@@ -77,8 +76,8 @@ scoring = {'precision': make_scorer(precision_score, average='binary'),
 # %%
 X_train, X_test, y_train, y_test = train_test_split(X, y, \
     test_size=0.20, random_state=0)
-# X_train = pd.DataFrame(scaler.fit_transform(X_train))
-# X_test = pd.DataFrame(scaler.fit_transform(X_test))
+X_train = pd.DataFrame(scaler.fit_transform(X_train))
+X_test = pd.DataFrame(scaler.fit_transform(X_test))
 
 # %%
 # ### Loop cross validation through various models and generate results\
@@ -100,7 +99,9 @@ for mod in models:
     i += 1
 cv_results_df = pd.DataFrame(cv_result_entries)
 cv_results_df.columns = ['algo', 'cv fold', 'metric', 'value']
-cv_results_df.to_csv('rawvoxels_cv_results_df.csv')
+
+# %%
+cv_results_df.to_csv('rawVoxels_cv_results_df.csv')
 
 # %% [markdown]
 # ### Plot cv results
@@ -175,7 +176,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Fit Time score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.saveDir +'fit_time.png')
+plt.savefig(configs.saveDir + 'rawVoxels_fit_time.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_score_time)
@@ -205,7 +206,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('F1 score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.savedir + 'rawVoxels_f1.png')
+plt.savefig(configs.saveDir + 'rawVoxels_f1_score.png')
 
 # plt.figure(figsize=fig_size_tuple)
 # sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_f2)
