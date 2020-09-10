@@ -216,18 +216,22 @@ def createConnectivityMeasure(train, test):
     #print(len(connectomes))
     #print(len(classes[train]))
     
+    classes_np_array = np.array(classes)
+    
     #fit classifier
-    classifier = LinearSVC().fit(connectomes, classes[train])
+    classifier = LinearSVC().fit(connectomes, classes_np_array[train])
     
     predictions = classifier.predict(
         connectivity.transform(time_series_numpy_array[test]))
     
     # store the accuracy for this cross-validation fold
-    scores[kind_of_matrix_correlation].append(accuracy_score(classes[test], predictions))
+    #scores[kind_of_matrix_correlation].append(accuracy_score(classes_np_array[test], predictions))
+    return accuracy_score(classes_np_array[test], predictions)
 
 for kind_of_matrix_correlation in kinds_of_matrix_correlation:
-
-    score = Parallel(n_jobs=-1, verbose=50)(delayed(createConnectivityMeasure)(train, test) for train, test in cv.split(time_series_numpy_array, classes))
+    scores[kind_of_matrix_correlation] = []
+    score = Parallel(n_jobs=4, verbose=50)(delayed(createConnectivityMeasure)(train, test) for train, test in cv.split(time_series_numpy_array, classes))
+    scores[kind_of_matrix_correlation].append(score)
   
 # calculate mean accuracy scores, and their standard deviations
 mean_scores = [np.mean(scores[kind_of_matrix_correlation]) for kind_of_matrix_correlation in kinds_of_matrix_correlation]
@@ -238,3 +242,4 @@ results_df = pd.DataFrame(list(zip(kinds_of_matrix_correlation, mean_scores, sco
 
 # print results of df to a csv
 results_df.to_csv('test_classification_of_functional_connectivity_between_roi_results.csv')
+# %%
