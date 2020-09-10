@@ -18,7 +18,7 @@ from joblib import Parallel, delayed
 # %% [markdown]
 # ## Load configs (all patterns/files/folderpaths)
 import configurations
-configs = configurations.Config('sub-xxx-resamp-intersected')
+configs = configurations.Config('SFCM_confoundsOut_20-100slice')
 
 # %% [markdown]
 # ## Function to find all the regressor file paths
@@ -162,15 +162,14 @@ masker = NiftiMasker(mask_img=configs.maskDataFile, standardize=False)
 @timer
 def gen_one_voxel_df(filepath, masker, start, end):
     masked_array = masker.fit_transform(image.index_img(filepath, slice(start,end)))
-    reshaped_array = pd.DataFrame(np.reshape(
-        masked_array.ravel(), newshape=[1,-1]), dtype='float32')
-    print('> Shape of raw voxels for file ' + 
-          '\"' + pathlib.Path(filepath).stem + '\" ' + 
-          'is: \n' + 
-          '\t 1-D (UnMasked+Sliced): ' + str(reshaped_array.shape) + '\n' +
-          '\t 2-D (UnMasked+Sliced): ' + str(masked_array.shape) + '\n' +
-          '\t 4-D (Raw header)     : ' + str(nib.load(filepath).header.get_data_shape())
-    )
+    reshaped_array = np.reshape(masked_array.ravel(), newshape=[1,-1])
+    # print('> Shape of raw voxels for file ' + 
+    #       '\"' + pathlib.Path(filepath).stem + '\" ' + 
+    #       'is: \n' + 
+    #       '\t 1-D (UnMasked+Sliced): ' + str(reshaped_array.shape) + '\n' +
+    #       '\t 2-D (UnMasked+Sliced): ' + str(masked_array.shape) + '\n' +
+    #       '\t 4-D (Raw header)     : ' + str(nib.load(filepath).header.get_data_shape())
+    # )
     return reshaped_array
 
 # %% [markdown]
@@ -181,14 +180,18 @@ def get_voxels_df(metadata_df, masker, start, end):
     print() # Print to add a spacer for aesthetics
 
     #below has been parallelized
-    for i in range(len(metadata_df)):
-        rawvoxels_list.append(gen_one_voxel_df(metadata_df['path'].iloc[i], masker, start, end))
-        print() # Print to add a spacer for aesthetics
-    
-    # rawvoxels_list.append(Parallel(n_jobs=-1, verbose=100)(delayed(gen_one_voxel_df)(metadata_df['path'].iloc[i], masker, start, end) for i in range(len(metadata_df))))
+    # for i in range(len(metadata_df)):
+    #     rawvoxels_list.append(gen_one_voxel_df(metadata_df['path'].iloc[i], masker, start, end))
+    #     print() # Print to add a spacer for aesthetics
 
+    feature_array = gen_one_voxel_df(metadata_df['path'].iloc[0], masker, start, end)
+    print("feature_array at index 0")
+    print(feature_array)
+    print()
+    feature_array = np.vstack((feature_array, np.vstack(Parallel(n_jobs=-1, verbose=100)(delayed(gen_one_voxel_df)(metadata_df['path'].iloc[i], masker, start, end) for i in range(1, len(metadata_df))))))
+
+    tmp_df = pd.DataFrame(feature_array)
     print() # Print to add a spacer for aesthetics
-    tmp_df = pd.concat(rawvoxels_list, ignore_index=True)
     tmp_df['sleepdep'] = metadata_df['sleepdep']
     temp_dict = dict((val, str(val)) for val in list(range(len(tmp_df.columns)-1)))
     return tmp_df.rename(columns=temp_dict, errors='raise')
@@ -200,7 +203,8 @@ gc.collect()
 # %% [markdown]
 # ## Get/Generate raw voxels dataframe from all images with Y column label included
 voxels_df = get_voxels_df(sleep_bids_comb_df, masker, configs.startSlice, configs.endSlice)
-X = pd.concat([voxels_df, important_confounds_df], axis=1)
+#X = pd.concat([voxels_df, important_confounds_df], axis=1)
+X = voxels_df
 
 # %% [markdown]
 # ## Separately get the Y label

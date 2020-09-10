@@ -18,11 +18,7 @@ import time
 import pathlib
 import os.path
 
-# %%
-# Fetch Harvard Oxford Atlas
-dataset = datasets.fetch_atlas_harvard_oxford('cort-maxprob-thr25-2mm')
-atlas_filename = dataset.maps
-labels = dataset.labels
+
 
 # %%
 # Function to find all the regressor file paths
@@ -79,7 +75,7 @@ time_series_list = []
 groups = [] # session 1 or session 2 
 
 # %%
-masker = NiftiLabelsMasker(labels_img=atlas_filename, standardize=True,
+masker = NiftiLabelsMasker(labels_img=atlas_filename, standardize=False,
                            memory='nilearn_cache', verbose=5)
 
 #masker = NiftiMapsMasker(maps_img=atlas_filename, standardize=True, memory='nilearn_cache', memory_level=1, verbose=0)
@@ -109,6 +105,7 @@ kinds_of_matrix_correlation = ['correlation', 'partial correlation', 'tangent']
 
 # classes: "0" is ses-1, "1" is ses-2
 _, classes = np.unique(groups, return_inverse=True)
+#classes = take binary column from dataframe and make it into a list
 
 # define cross-validation strategy here
 cv = StratifiedShuffleSplit(n_splits=15, random_state=0, test_size=5)
