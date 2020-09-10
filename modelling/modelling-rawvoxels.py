@@ -49,7 +49,9 @@ svc = pipeline
 # ### Normalize X
 scaler = MinMaxScaler() 
 y = pd.DataFrame(df['sleepdep'])
+# y = ["WideAwake" if x == 0 else "Sleepy" for x in y['sleepdep']]
 X = pd.DataFrame(df.drop('sleepdep', axis=1))
+X = pd.DataFrame(scaler.fit_transform(X))
 # X_array = scaler.fit_transform(X)
 # df2 = pd.DataFrame(X_array)
 # df2['sleepdep'] = df['sleepdep']
@@ -57,7 +59,7 @@ X = pd.DataFrame(df.drop('sleepdep', axis=1))
 # %%
 # from sklearn.model_selection import cross_val_score
 
-# cv_scores_svc = cross_val_score(svc, X_array, y, cv=2, verbose=2, n_jobs=-1)
+# cv_scores_svc = cross_val_score(svc, X, y, cv=2, verbose=2, n_jobs=-1)
 
 # print('SVC Mean CV Score:', cv_scores_svc.mean())
 
@@ -65,34 +67,34 @@ X = pd.DataFrame(df.drop('sleepdep', axis=1))
 # ## Try traditional ML models
 # ### Define and train the models
 models = [  
-    LogisticRegression(random_state=1, n_jobs=-1),
-    KNeighborsClassifier(n_neighbors=10, n_jobs=-1),
-    DecisionTreeClassifier(),
-    GaussianNB(),
+    LogisticRegression(random_state=1),
+    # KNeighborsClassifier(n_neighbors=10, n_jobs=-1),
+    # DecisionTreeClassifier(),
+    # GaussianNB(),
     LinearSVC(),
-    BaggingClassifier(base_estimator=\
-        DecisionTreeClassifier(max_leaf_nodes=2620), n_estimators=100, n_jobs=-1)
+    # BaggingClassifier(base_estimator=\
+    #     DecisionTreeClassifier(max_leaf_nodes=2620), n_estimators=100, n_jobs=-1)
 ]
 model_namelist = ['Logistic Regression',
-                  'KNeighbors',
-                  'Decision Tree',
-                  'GaussianNB', 
+                #   'KNeighbors',
+                #   'Decision Tree',
+                #   'GaussianNB', 
                   'SVM/Linear SVC',
-                  'Bagging-DT'
+                #   'Bagging-DT'
                   ]
-scoring = {'precision': make_scorer(precision_score), 
-           'recall': make_scorer(recall_score), 
-            'accuracy': make_scorer(accuracy_score), 
-           'f1': make_scorer(f1_score),
-           'roc_auc': make_scorer(roc_auc_score),
+scoring = {'precision': make_scorer(precision_score, average='binary'), 
+           'recall': make_scorer(recall_score, pos_label=1, average='binary'), 
+           'accuracy': make_scorer(accuracy_score), 
+           'f1': make_scorer(f1_score, average='binary'),
+           'roc_auc': make_scorer(roc_auc_score)
            # 'mcc': make_scorer(matthews_corrcoef)
           } 
 
 # %%
 X_train, X_test, y_train, y_test = train_test_split(X, y, \
     test_size=0.20, random_state=0)
-X_train = pd.DataFrame(scaler.fit_transform(X_train))
-X_test = pd.DataFrame(scaler.fit_transform(X_test))
+# X_train = pd.DataFrame(scaler.fit_transform(X_train))
+# X_test = pd.DataFrame(scaler.fit_transform(X_test))
 
 # %%
 # ### Loop cross validation through various models and generate results\
@@ -113,25 +115,52 @@ for mod in models:
             cv_result_entries.append((model_namelist[i], fold_index, key, score))
     i += 1
 cv_results_df = pd.DataFrame(cv_result_entries)
+cv_results_df.columns = ['algo', 'cv fold', 'metric', 'value']
+cv_results_df.to_csv('rawvoxels_cv_results_df.csv')
+
+# %% [markdown]
+# ### Plot cv results
+for metric_name, metric in zip(['fit_time',
+                                'test_precision',
+                                'test_recall',
+                                'test_f1',
+                                'test_roc_auc'],
+                                ['Fit Time',
+                                'Precision',
+                                'Recall',
+                                'F1 Score',
+                                'ROC AUC']):
+    sns.boxplot(x='algo', y='value', #hue='algo',
+        data=cv_results_df[cv_results_df.metric.eq(f'{metric_name}')])
+    sns.stripplot(x='algo', y = 'value', 
+        data = cv_results_df[cv_results_df.metric.eq(f'{metric_name}')],
+        size = 5, linewidth = 1)
+    plt.title(f'{metric} Algo Comparison', fontsize=12)
+    plt.xlabel('Algorithm', fontsize=12)
+    plt.ylabel(f'{metric}', fontsize=12)
+    plt.xticks([0, 1, 2, 3, 4])
+    plt.xticks(rotation=45)
+    plt.show()
 
 # %% [markdown]
 # ### Misclassification Errors
 # NOTE: NOT WORKING!? ValueError: 
 # This solver needs samples of at least 2 classes in the data, 
 # but the data contains only one class: 0
-i=0
-for model in models:
-    plot_learning_curves(X_train, y_train, X_test, y_test, model)
-    plt.title('Learning Curve for ' + model_namelist[i], fontsize=14)
-    plt.xlabel('Training Set Size (%)', fontsize=12)
-    plt.ylabel('Misclassification Error', fontsize=12)
-    plt.show()
-    i += 1
+# i=0
+# for model in models:
+#     plot_learning_curves(X_train, y_train, X_test, y_test, model)
+#     plt.title('Learning Curve for ' + model_namelist[i], fontsize=14)
+#     plt.xlabel('Training Set Size (%)', fontsize=12)
+#     plt.ylabel('Misclassification Error', fontsize=12)
+#     plt.show()
+#     i += 1
 
 # %% [markdown]
 # ### Get predictions: prep for Confusion Matrix
 y_test_pred = []
 for model in models:
+    model.fit(X,y)
     y_test_pred.append(model.predict(X_test))
 
 # %% [markdown]
@@ -160,6 +189,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Fit Time score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
+plt.savefig(configs.saveDir)
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_score_time)
@@ -169,6 +199,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Score Time score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
+plt.savefig(configs.saveDir)
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_accuracy)
@@ -178,6 +209,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Accuracy score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
+plt.savefig(configs.saveDir)
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_f1)
@@ -187,6 +219,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('F1 score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
+plt.savefig(configs.saveDir)
 
 # plt.figure(figsize=fig_size_tuple)
 # sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_f2)
@@ -205,6 +238,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Precision score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
+plt.savefig(configs.saveDir)
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_recall)
@@ -214,6 +248,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Recall score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
+plt.savefig(configs.saveDir)
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_roc_auc)
@@ -223,13 +258,12 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('ROC-AUC score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
+plt.savefig(configs.saveDir)
 
 # %% [markdown]
 # ### Confusion Matrix
 
-CLASSES = ['A/C', 'Car Horn', 'Children Play', 'Dog Bark',
-           'Drilling', 'Engine Idle', 'Gun Shot', 'Jackhammer',
-           'Siren', 'Street Music']
+CLASSES = ['Awake', 'Sleepy']
 i=0
 for _ in models:
     cm = confusion_matrix(np.argmax(y_test, axis=1), np.argmax(y_test_pred[i], axis=1))
@@ -240,3 +274,5 @@ for _ in models:
     sns.heatmap(cm_df, annot=True, fmt='.6g', annot_kws={"size": 10}, cmap='Reds')
     plt.show()
     i += 1
+
+# %%
