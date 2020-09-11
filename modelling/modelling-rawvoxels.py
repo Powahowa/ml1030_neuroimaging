@@ -40,11 +40,11 @@ df = pd.read_pickle(configs.rawVoxelFile)
 
 # %% [markdown]
 # ### Normalize X
-scaler = MinMaxScaler() 
+# scaler = MinMaxScaler() 
 y = pd.DataFrame(df['sleepdep'])
 # y = ["WideAwake" if x == 0 else "Sleepy" for x in y['sleepdep']]
 X = pd.DataFrame(df.drop('sleepdep', axis=1))
-X = pd.DataFrame(scaler.fit_transform(X))
+# X = pd.DataFrame(scaler.fit_transform(X))
 
 # %% [markdown]
 # ## Try traditional ML models
