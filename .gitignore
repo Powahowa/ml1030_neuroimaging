@@ -5,3 +5,4 @@ features
 feature_extraction/nilearn_cache
 feature_extraction/__pycache__
 feature_extraction/__pycache__/configurations.cpython-37.pyc
+Viswesh/__pycache__/configurations.cpython-37.pyc

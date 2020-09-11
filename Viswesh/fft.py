@@ -7,6 +7,7 @@ import pathlib
 import functools
 import time
 from pycaret.classification import *
+import matplotlib.pyplot as plt
 import re
 
 # %%
@@ -107,8 +108,23 @@ data
 
 #%%
 #print(image.load_img(fdd).shape)
-test = np.fft.fftn(data,axes = 3)
+test = np.fft.fftn(data)
 
+#%%
+subjectDir = "../data/preprocessed/sub-9001/"
+sessionDir = "ses-1/"
+slice = image.index_img(subjectDir + 
+        sessionDir + 
+        "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", 100)
+slice2d = image.get_data(slice)
+slice2d
+z = slice2d[0:104,123,0:81]
+
+#%%
+test = np.fft.fftn(z)
+
+plt.imshow(z.T, cmap='hot', interpolation='nearest', origin = 'lower')
+plt.show()
 
 #%% 
 
