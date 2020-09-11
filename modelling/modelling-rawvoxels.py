@@ -126,7 +126,7 @@ for metric_name, metric in zip(['fit_time',
     plt.xticks([0, 1, 2, 3, 4])
     plt.xticks(rotation=45)
     plt.show()
-    plt.savefig(configs.savedir + 'rawVoxels_cv_results.png')
+    plt.savefig(configs.saveDir + 'rawVoxels_cv_results.png')
 
 
 # %% [markdown]
@@ -186,7 +186,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Score Time score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.savedir + 'rawVoxels_score_time.png')
+plt.savefig(configs.saveDir + 'rawVoxels_score_time.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_accuracy)
@@ -196,7 +196,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Accuracy score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.savedir + 'rawVoxels_accuracy.png')
+plt.savefig(configs.saveDir + 'rawVoxels_accuracy.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_f1)
@@ -225,7 +225,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Precision score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.savedir + 'rawVoxels_precision.png')
+plt.savefig(configs.saveDir + 'rawVoxels_precision.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_recall)
@@ -235,7 +235,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Recall score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.savedir + 'rawVoxels_recall.png')
+plt.savefig(configs.saveDir + 'rawVoxels_recall.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_roc_auc)
@@ -245,7 +245,7 @@ plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('ROC-AUC score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
 plt.show()
-plt.savefig(configs.savedir + 'rawVoxels_roc-auc.png')
+plt.savefig(configs.saveDir + 'rawVoxels_roc-auc.png')
 
 # %% [markdown]
 # ### Confusion Matrix
@@ -260,7 +260,7 @@ for _ in models:
     plt.title('Confusion Matrix for ' + model_namelist[i], fontsize=14)
     sns.heatmap(cm_df, annot=True, fmt='.6g', annot_kws={"size": 10}, cmap='Reds')
     plt.show()
-    plt.savefig(configs.savedir + 'rawVoxels_confusion_matrix.png')
+    plt.savefig(configs.saveDir + 'rawVoxels_confusion_matrix.png')
     i += 1
 
 # %%
