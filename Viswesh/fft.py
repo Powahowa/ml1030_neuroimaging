@@ -163,7 +163,7 @@ important_confounds_df = get_important_confounds(
 def genFFT(filepath, start, end):
     FFTarray = np.empty(0)
     for i in range(start, end):
-        FFT = np.fft.fftn(image.get_data(image.index_img(filepath, slice(i))))
+        FFT = np.fft.fftn(image.get_data(image.index_img(filepath, i)))
         FFTarray = np.concatenate((FFTarray, FFT), axis=0)
     reshaped_array = np.ravel(FFTarray)
     return reshaped_array
@@ -211,9 +211,9 @@ X.to_pickle(configs.rawVoxelFile)
 
 fdd = '../data/preprocessed/sub-9001/ses-1/func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz'
 
-FFT = np.fft.fftn(image.get_data(image.index_img(fdd, slice(50))))
+FFT = np.fft.fftn(image.get_data(image.index_img(fdd, 50)))
 
-
+FFT.shape
 
 #%%
 
