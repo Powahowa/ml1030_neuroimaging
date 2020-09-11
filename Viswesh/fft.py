@@ -161,11 +161,11 @@ important_confounds_df = get_important_confounds(
 # ## Helper to generate raw voxel df from a given path + masker and print shape for sanity
 @timer
 def genFFT(filepath, start, end):
-    FFTarray = np.empty(0)
+    FFTarray = []
     for i in range(start, end):
         FFT = np.fft.fftn(image.get_data(image.index_img(filepath, i)))
-        FFTarray = np.concatenate((FFTarray, FFT), axis=0)
-    reshaped_array = np.ravel(FFTarray)
+        FFTarray.append(FFT)
+    reshaped_array = np.ravel(np.array(FFTarray))
     return reshaped_array
 
 # %% [markdown]
