@@ -54,16 +54,15 @@ models = [
     KNeighborsClassifier(n_neighbors=10, n_jobs=-1),
     DecisionTreeClassifier(),
     GaussianNB(),
-    LinearSVC(),
-    BaggingClassifier(base_estimator=\
-        DecisionTreeClassifier(max_leaf_nodes=2620), n_estimators=100, n_jobs=-1)
+    GradientBoostingClassifier(random_state=0)
+    #LinearSVC(),
 ]
 model_namelist = ['Logistic Regression',
                     'KNeighbors',
                   'Decision Tree',
                   'GaussianNB', 
-                  'SVM/Linear SVC',
-                  'Bagging-DT'
+                  'GBM'
+                  #'SVM/Linear SVC',
                   ]
 scoring = {'precision': make_scorer(precision_score, average='binary'), 
            'recall': make_scorer(recall_score, pos_label=1, average='binary'), 
@@ -76,8 +75,8 @@ scoring = {'precision': make_scorer(precision_score, average='binary'),
 # %%
 X_train, X_test, y_train, y_test = train_test_split(X, y, \
     test_size=0.20, random_state=0)
-X_train = pd.DataFrame(scaler.fit_transform(X_train))
-X_test = pd.DataFrame(scaler.fit_transform(X_test))
+#X_train = pd.DataFrame(scaler.fit_transform(X_train))
+#X_test = pd.DataFrame(scaler.fit_transform(X_test))
 
 # %%
 # ### Loop cross validation through various models and generate results\

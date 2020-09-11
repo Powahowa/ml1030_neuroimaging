@@ -20,10 +20,28 @@ import pathlib
 import os.path
 import re
 
+from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.model_selection import KFold
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, \
+        GradientBoostingClassifier, StackingClassifier, BaggingClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import LinearSVC, SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import label_binarize
+from sklearn.metrics import fbeta_score, make_scorer
+from sklearn.metrics import balanced_accuracy_score, accuracy_score, \
+        precision_score, recall_score, f1_score, roc_auc_score
+from sklearn.model_selection import cross_validate
+
 # %% [markdown]
 # ## Load configs (all patterns/files/folderpaths)
 import configurations
-configs = configurations.Config('patrickTest')
+configs = configurations.Config('STCN_confoundsIn_43-103slice')
 
 # %% [markdown]
 # ## Function to find all the regressor file paths
@@ -168,35 +186,6 @@ important_reg_list = ['csf', 'white_matter', 'global_signal',
 save_important_confounds_v2(
     sleep_bids_comb_df['confound_path'], sleep_bids_comb_df['important_confounds_path'], important_reg_list)
 
-# %%
-# fetch Harvard Oxford atlas
-dataset = datasets.fetch_atlas_harvard_oxford('cort-maxprob-thr25-2mm')
-atlas_filename = dataset.maps
-labels = dataset.labels
-
-
-# %%
-
-time_series_list = []
-masker = NiftiLabelsMasker(labels_img=atlas_filename, standardize=False,
-                           memory='nilearn_cache', verbose=5)
-
-#masker = NiftiMapsMasker(maps_img=atlas_filename, standardize=True, memory='nilearn_cache', memory_level=1, verbose=0)
-
-# Here we go from nifti files to the signal time series in a numpy
-# array. Note how we give confounds to be regressed out during signal
-# extraction
-
-#time_series = masker.fit_transform(arrows_slices_file_path, confounds=no_nan_arrows_confounds_regressors_path)
-#time_series = masker.fit_transform(arrows_slices_file_path, confounds=zero_for_nan_arrows_confounds_regressors_path)
-
-# rather than iterate through nii_paths, we will iterate through the sleep_bids_comb_df 
-#for nii_path in nii_paths:
-#    time_series = masker.fit_transform(nii_path.__str__())
-#    time_series_list.append(time_series)
-for index, row in sleep_bids_comb_df.iterrows():
-    time_series = masker.fit_transform(row['path'], confounds=row['important_confounds_path'])
-    time_series_list.append(time_series)
 
 # %%
 # Calculate classification for connectivity
@@ -212,20 +201,13 @@ classes = sleep_bids_comb_df['sleepdep'].tolist()
 # define cross-validation strategy here
 cv = StratifiedShuffleSplit(n_splits=24, random_state=0, test_size=5)
 
-# convert list into numpy array
-time_series_numpy_array = np.asarray(time_series_list)
+#%%
 
-# convert tim_series_numpy_array to Dataframe
-time_series_df = pd.DataFrame(time_series_numpy_array, columns=['time_series_list'])
-time_series_df.to_pickle(configs.rawFunctionalConnectivityFile)
+time_series_df = pd.read_pickle(configs.rawFunctionalConnectivityFile)
+time_series_numpy_array = time_series_df['time_series_list'].to_numpy()
 
 # scores
 scores = {}
-
-# %%
-# concatenate time_series_df with important_confounds_df
-
-# %%
 
 def createConnectivityMeasure(train, test):
     scores[kind_of_matrix_correlation] = []
@@ -240,7 +222,7 @@ def createConnectivityMeasure(train, test):
     classes_np_array = np.array(classes)
     
     #fit classifier
-    classifier = LinearSVC().fit(connectomes, classes_np_array[train])
+    classifier = LogisticRegression(random_state=1).fit(connectomes, classes_np_array[train])
     
     predictions = classifier.predict(
         connectivity.transform(time_series_numpy_array[test]))
@@ -262,5 +244,5 @@ scores_std = [np.std(scores[kind_of_matrix_correlation]) for kind_of_matrix_corr
 results_df = pd.DataFrame(list(zip(kinds_of_matrix_correlation, mean_scores, scores_std)), columns = ['Kind of correlation', 'mean_scores', 'scores_std'])
 
 # print results of df to a csv
-results_df.to_csv('test_classification_of_functional_connectivity_between_roi_results.csv')
+results_df.to_csv('patrick-test_test_classification_of_functional_connectivity_between_roi_results.csv')
 # %%

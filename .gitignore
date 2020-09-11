@@ -1,7 +1,9 @@
 data/preprocessed
+data/removed
 .vscode/settings.json
 /Tony/.vscode/settings.json
 features
 feature_extraction/nilearn_cache
 feature_extraction/__pycache__
 feature_extraction/__pycache__/configurations.cpython-37.pyc
+modelling/__pycache__/configurations.cpython-37.pyc
