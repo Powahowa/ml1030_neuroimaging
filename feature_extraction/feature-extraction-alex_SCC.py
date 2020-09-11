@@ -105,11 +105,14 @@ def get_bids_components(paths):
         confound_file = path.with_name(
             'sub-'+subject+'_ses-'+session+'_task-'+task+'_desc-confounds_regressors.tsv'
         )
+        important_counfounds_file = path.with_name(
+            'sub-'+subject+'_ses-'+session+'_task-'+task+'_desc-confounds_regressors_important.tsv'
+        )
         components_list.append([subject, session, task, 
-            path.__str__(), confound_file.__str__(), 0]
+            path.__str__(), confound_file.__str__(), important_counfounds_file.__str__(), 0]
         )
     df = pd.DataFrame(components_list, 
-        columns=['subject', 'session', 'task', 'path', 'confound_path', 'sleepdep']
+        columns=['subject', 'session', 'task', 'path', 'confound_path', 'important_confounds_path', 'sleepdep']
     )
     return df
 
@@ -129,34 +132,41 @@ for i in range(len(sleep_bids_comb_df)):
 sleep_bids_comb_df
 
 # %% [markdown]
-# # ## Get confounds that can be used further clean up the signal or for prediction
-# def get_important_confounds(regressor_paths, important_reg_list, start, end):
-#     regressors_df_list = []
-#     for paths in regressor_paths:
-#         regressors_all = pd.DataFrame(pd.read_csv(paths, sep="\t"))
-#         regressors_selected = pd.DataFrame(regressors_all[important_reg_list].loc[start:end-1])
-#         regressors_df_list.append(pd.DataFrame(regressors_selected.stack(0)).transpose())
-#     concatenated_df = pd.concat(regressors_df_list, ignore_index=True)
-#     concatenated_df.columns = [col[1] + '-' + str(col[0]) for col in concatenated_df.columns.values]
-#     return concatenated_df
+## Get confounds that can be used further clean up the signal or for prediction
+def save_important_confounds_v2(regressor_paths, important_confounds_paths, important_reg_list):
+    regressors_df_list = []
+    for idx, regressor_path in enumerate(regressor_paths):
+        important_confounds_path = important_confounds_paths[idx]
+        regressors_all = pd.DataFrame(pd.read_csv(regressor_path, sep="\t"))
+        regressors_selected = pd.DataFrame(regressors_all[important_reg_list])
+        print(regressors_selected.shape)
 
-# important_reg_list = ['csf', 'white_matter', 'global_signal', 
-#                       'trans_x', 'trans_y', 'trans_z', 
-#                       'rot_x', 'rot_y', 'rot_z', 
-#                       'csf_derivative1', 'white_matter_derivative1', 'global_signal_derivative1',
-#                       'trans_x_derivative1', 'trans_y_derivative1', 'trans_z_derivative1',
-#                       'rot_x_derivative1', 'rot_y_derivative1', 'rot_z_derivative1',
-#                       'csf_power2', 'white_matter_power2', 'global_signal_power2',
-#                       'trans_x_power2', 'trans_y_power2', 'trans_z_power2',
-#                       'rot_x_power2', 'rot_y_power2', 'rot_z_power2',
-#                       'csf_derivative1_power2', 'white_matter_derivative1_power2', 'global_signal_derivative1_power2',
-#                       'trans_x_derivative1_power2', 'trans_y_derivative1_power2', 'trans_z_derivative1_power2',
-#                       'rot_x_derivative1_power2', 'rot_y_derivative1_power2', 'rot_z_derivative1_power2'
-#                      ]
+        print('important_confounds_path:' + important_confounds_path)
+        # if there are any null values in the confounds
+        if regressors_selected.isnull().values.any():
+            confounds_columns_mean = regressors_selected.mean()
+            regressors_selected_no_nan = regressors_selected.fillna(confounds_columns_mean)
 
-# important_confounds_df = get_important_confounds(
-#     sleep_bids_comb_df['confound_path'], important_reg_list, configs.startSlice, configs.endSlice
-# )
+            regressors_selected_no_nan.to_csv(important_confounds_path, sep="\t")
+        else:
+            regressors_selected.to_csv(important_confounds_path, sep="\t")
+            
+important_reg_list = ['csf', 'white_matter', 'global_signal', 
+                      'trans_x', 'trans_y', 'trans_z', 
+                      'rot_x', 'rot_y', 'rot_z', 
+                      'csf_derivative1', 'white_matter_derivative1', 'global_signal_derivative1',
+                      'trans_x_derivative1', 'trans_y_derivative1', 'trans_z_derivative1',
+                      'rot_x_derivative1', 'rot_y_derivative1', 'rot_z_derivative1',
+                      'csf_power2', 'white_matter_power2', 'global_signal_power2',
+                      'trans_x_power2', 'trans_y_power2', 'trans_z_power2',
+                      'rot_x_power2', 'rot_y_power2', 'rot_z_power2',
+                      'csf_derivative1_power2', 'white_matter_derivative1_power2', 'global_signal_derivative1_power2',
+                      'trans_x_derivative1_power2', 'trans_y_derivative1_power2', 'trans_z_derivative1_power2',
+                      'rot_x_derivative1_power2', 'rot_y_derivative1_power2', 'rot_z_derivative1_power2'
+                     ]
+
+save_important_confounds_v2(
+    sleep_bids_comb_df['confound_path'], sleep_bids_comb_df['important_confounds_path'], important_reg_list)
 
 # %%
 # fetch Harvard Oxford atlas
@@ -180,8 +190,12 @@ masker = NiftiLabelsMasker(labels_img=atlas_filename, standardize=False,
 #time_series = masker.fit_transform(arrows_slices_file_path, confounds=no_nan_arrows_confounds_regressors_path)
 #time_series = masker.fit_transform(arrows_slices_file_path, confounds=zero_for_nan_arrows_confounds_regressors_path)
 
-for nii_path in nii_paths:
-    time_series = masker.fit_transform(nii_path.__str__())
+# rather than iterate through nii_paths, we will iterate through the sleep_bids_comb_df 
+#for nii_path in nii_paths:
+#    time_series = masker.fit_transform(nii_path.__str__())
+#    time_series_list.append(time_series)
+for index, row in sleep_bids_comb_df.iterrows():
+    time_series = masker.fit_transform(row['path'], confounds=row['important_confounds_path'])
     time_series_list.append(time_series)
 
 # %%
@@ -207,6 +221,9 @@ time_series_df.to_pickle(configs.rawFunctionalConnectivityFile)
 
 # scores
 scores = {}
+
+# %%
+# concatenate time_series_df with important_confounds_df
 
 # %%
 
