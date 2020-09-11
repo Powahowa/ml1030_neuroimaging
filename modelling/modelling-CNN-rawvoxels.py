@@ -10,15 +10,17 @@ from joblib import Parallel, delayed
 
 import configurations
 
-configs = configurations.Config('sub-xxx-resamp-intersected')
+configs = configurations.Config('testSet')
 
 # %%
 raw_df = pd.read_pickle(configs.rawVoxelFile)
-df2 = raw_df.iloc[:,0:3634160]
+#the below hard coded value is the 2nd dimension of the raw feature file
+df2 = raw_df
 y = raw_df['sleepdep']
+df2 = df2.drop(columns=['sleepdep'])
 tmp_list = []
 for row_index in range(len(df2)):
-    tmp_list.append(np.reshape(np.array(df2.iloc[row_index]), newshape=(40,-1)))
+    tmp_list.append(np.reshape(np.array(df2.iloc[row_index]), newshape=(configs.endSlice-configs.startSlice, -1)))
 X = np.stack(tmp_list, axis=0)
 
 # %%
@@ -27,7 +29,7 @@ def get_cnn():
     num_filters = [24,32,64,128] 
     pool_size = (2) 
     kernel_size = (3)  
-    input_shape = (40, 90854)
+    input_shape = (configs.endSlice-configs.startSlice, len(df2.iloc[0]))
     num_classes = 2
     keras.backend.clear_session()
     
@@ -73,7 +75,7 @@ trainaccuracies = []
 valaccuracies = []
 testaccuracies = []
 i = 0
-logdir = './NN-logs/rawVoxels/'
+logdir = './CNN'
 num_epochs = 100
 num_waits = 10
 verbosity = 1
@@ -138,6 +140,6 @@ print("Average Train 10 Folds Accuracy: {0}".format(np.mean(trainaccuracies)))
 print("Average Val 10 Folds Accuracy: {0}".format(np.mean(valaccuracies)))
 # print("Average Test 10 Folds Accuracy: {0}".format(np.mean(testaccuracies)))
 
-pd.DataFrame.from_dict(history_cnn.history).to_csv('rawVoxelsHistory.csv',index=False)
-model.save('./NN-models/rawVoxels/rawVoxelModel')
+pd.DataFrame.from_dict(history_cnn.history).to_csv('./CNN/rawVoxelsHistory.csv',index=False)
+model.save('./CNN/rawVoxelModel')
 # %%
