@@ -17,7 +17,7 @@ import gc
 # %% [markdown]
 # ## Load configs (all patterns/files/folderpaths)
 import configurations
-configs = configurations.Config('patrickTest')
+configs = configurations.Config('STCM_confoundsOut_68-78slice')
 
 # %% [markdown]
 # ## Function to find all the regressor file paths
@@ -161,8 +161,9 @@ important_confounds_df = get_important_confounds(
 # ## Helper to generate raw voxel df from a given path + masker and print shape for sanity
 @timer
 def genFFT(filepath, start, end):
-    FFTarray = np.empty(0)
-    for i in range(start, end):
+    FFTarray = np.fft.fftn(image.get_data(image.index_img(filepath, start)))
+    
+    for i in range(start+1, end):
         FFT = np.fft.fftn(image.get_data(image.index_img(filepath, i)))
         FFTarray = np.concatenate((FFTarray, FFT), axis=0)
     reshaped_array = np.ravel(FFTarray)
@@ -177,7 +178,7 @@ def get_FFT_df(metadata_df, start, end):
     print("feature_array at index 0")
     print(feature_array)
     print()
-    feature_array = np.vstack((feature_array, np.vstack(Parallel(n_jobs=-1, verbose=100)(delayed(genFFT)(metadata_df['path'].iloc[i], masker, start, end) for i in range(1, len(metadata_df))))))
+    feature_array = np.vstack((feature_array, np.vstack(Parallel(n_jobs=-1, verbose=100)(delayed(genFFT)(metadata_df['path'].iloc[i], start, end) for i in range(1, len(metadata_df))))))
 
     tmp_df = pd.DataFrame(feature_array)
     print() # Print to add a spacer for aesthetics
@@ -202,46 +203,3 @@ Y = sleep_bids_comb_df['sleepdep']
 # %% [markdown]
 # ## Save raw dataframe with Y column included to a file
 X.to_pickle(configs.rawVoxelFile)
-
-
-
-#%%
-
-#FFT test
-
-fdd = '../data/preprocessed/sub-9001/ses-1/func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz'
-
-FFT = np.fft.fftn(image.get_data(image.index_img(fdd, 50)))
-
-FFT.shape
-
-#%%
-
-testImg = nib.load(fdd)
-data = image.get_data(image.index_img(testImg, 100))
-data
-
-#%%
-#print(image.load_img(fdd).shape)
-test = np.fft.fftn(data)
-
-#%%
-subjectDir = "../data/preprocessed/sub-9001/"
-sessionDir = "ses-1/"
-slice3d = image.index_img(subjectDir + 
-        sessionDir + 
-        "func/sub-9001_ses-1_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz", 100)
-slice3d = image.get_data(slice3d)
-slice3d = slice3d[52,0:123,0:81]
-
-#%%
-
-plt.imshow(slice3d.T, cmap='hot', interpolation='nearest', origin = 'lower')
-plt.show()
-
-#%%
-testFFT = np.fft.fftn(slice3d)
-testFFTFloat = testFFT.real
-#plt.imshow(testFFTFloat.T, cmap='hot', interpolation='nearest', origin ='lower', norm=matplotlib.colors.Normalize(vmin=0.0, vmax=1))
-plt.plot(np.log10(testFFT))
-plt.savefig('FFT of 2D slice.png', dpi=400)
