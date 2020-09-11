@@ -60,7 +60,7 @@ nii_paths = find_paths(relDataFolder=configs.dataDir,
                         sess='ses-*',
                         func='func',
                         patt=configs.maskedImagePattern)
-nii_paths 
+nii_paths
 
 # %% [markdown]
 # ## Read the participants.tsv file to find summaries of the subjects
@@ -177,7 +177,7 @@ def get_FFT_df(metadata_df, start, end):
     print("feature_array at index 0")
     print(feature_array)
     print()
-    feature_array = np.vstack((feature_array, np.vstack(Parallel(n_jobs=-1, verbose=100)(delayed(genFFT)(metadata_df['path'].iloc[i],start, end) for i in range(1, len(metadata_df))))))
+    feature_array = np.vstack((feature_array, np.vstack(Parallel(n_jobs=-1, verbose=100)(delayed(genFFT)(metadata_df['path'].iloc[i], masker, start, end) for i in range(1, len(metadata_df))))))
 
     tmp_df = pd.DataFrame(feature_array)
     print() # Print to add a spacer for aesthetics
