@@ -16,7 +16,7 @@ configs = configurations.Config('sub-xxx-resamp-intersected')
 raw_df = pd.read_pickle(configs.rawVoxelFile)
 #the below hard coded value is the 2nd dimension of the raw feature file
 df2 = raw_df
-y = raw_df['sleepdep']
+y = np.asarray(raw_df['sleepdep'])
 df2 = df2.drop(columns=['sleepdep'])
 tmp_list = []
 for row_index in range(len(df2)):
@@ -26,42 +26,14 @@ X = np.stack(tmp_list, axis=0)
 # %%
 # ## Define CNN
 def get_cnn():
-    num_filters = [24,32,64,128] 
-    pool_size = (2) 
-    kernel_size = (3)  
     input_shape = (configs.endSlice-configs.startSlice, len(X[0,0,:]))
-    num_classes = 2
+    num_classes = 1
     keras.backend.clear_session()
     
     model = keras.models.Sequential()
-    model.add(keras.layers.Conv1D(24, kernel_size, input_shape=input_shape,
-                padding="same"))
-    model.add(keras.layers.BatchNormalization())
-    model.add(keras.layers.Activation("relu"))
-    model.add(keras.layers.MaxPooling1D(pool_size=pool_size))
-
-    model.add(keras.layers.Conv1D(32, kernel_size,
-                                  padding="same"))
-    model.add(keras.layers.BatchNormalization())
-    model.add(keras.layers.Activation("relu"))  
-    model.add(keras.layers.MaxPooling1D(pool_size=pool_size))
-    
-    model.add(keras.layers.Conv1D(64, kernel_size,
-                                  padding="same"))
-    model.add(keras.layers.BatchNormalization())
-    model.add(keras.layers.Activation("relu"))  
-    model.add(keras.layers.MaxPooling1D(pool_size=pool_size))
-    
-    model.add(keras.layers.Conv1D(128, kernel_size,
-                                  padding="same"))
-    model.add(keras.layers.BatchNormalization())
-    model.add(keras.layers.Activation("relu"))  
-
-    model.add(keras.layers.GlobalMaxPooling1D())
-    model.add(keras.layers.Dense(256, activation="relu"))
-    model.add(keras.layers.Dense(num_classes, activation="softmax"))
-
-    model.compile(optimizer=keras.optimizers.Adam(1e-3), 
+    model.add(keras.layers.LSTM(100, activation='relu', input_shape=input_shape))
+    model.add(keras.layers.Dense(num_classes, activation='sigmoid'))
+    model.compile(optimizer=keras.optimizers.Adam(), 
         loss=keras.losses.BinaryCrossentropy(), 
         metrics=["accuracy"])
     return model
@@ -75,9 +47,9 @@ trainaccuracies = []
 valaccuracies = []
 testaccuracies = []
 i = 0
-logdir = './CNN/'
-num_epochs = 100
-num_waits = 10
+logdir = './LSTM/'
+num_epochs = 1000
+num_waits = 100
 verbosity = 1
 
 for train_index, test_index in kf.split(folds):
@@ -90,14 +62,14 @@ for train_index, test_index in kf.split(folds):
     # Checkpoint to continue models, early stopping and tensorboard
     checkpoint = keras.callbacks.ModelCheckpoint(
         logdir + 'best_%d.h5'%i, 
-        monitor='val_loss',
+        monitor='accuracy',
         verbose=verbosity, 
         save_weights_only=True, 
         save_best_only=True
     )
     early = keras.callbacks.EarlyStopping(
-        monitor='val_loss', 
-        mode='min', 
+        monitor='accuracy', 
+        mode='max', 
         patience=num_waits
     )
     tb = keras.callbacks.TensorBoard(log_dir=logdir)
@@ -110,7 +82,7 @@ for train_index, test_index in kf.split(folds):
         x_train, 
         y_train, 
         epochs=num_epochs,
-        use_multiprocessing=False, 
+        use_multiprocessing=True, 
         verbose=0,
         callbacks=callbacks_list,
         validation_data=(x_val, y_val)
@@ -135,6 +107,6 @@ print("Average Train 10 Folds Accuracy: {0}".format(np.mean(trainaccuracies)))
 print("Average Val 10 Folds Accuracy: {0}".format(np.mean(valaccuracies)))
 # print("Average Test 10 Folds Accuracy: {0}".format(np.mean(testaccuracies)))
 
-pd.DataFrame.from_dict(history_cnn.history).to_csv('./CNN/rawVoxelsHistory.csv',index=False)
-model.save('./CNN/rawVoxelModel')
+pd.DataFrame.from_dict(history_cnn.history).to_csv('./LSTM/rawVoxelsHistory.csv',index=False)
+model.save('./LSTM/rawVoxelModel')
 # %%
