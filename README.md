@@ -23,4 +23,4 @@ You will need to modify the experiments/configurations files to point to your lo
 
 The folders are numbered in order that we approached the problem (suggested run order).
 
-If you get stuck, please contact us.
+If you get stuck, please contact us at DataKnightsAI@gmail.com.
