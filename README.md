@@ -14,3 +14,13 @@ In order to facilitate cross-platform usage and to have one central location to 
     configs = configurations.Config('experiment-name')
 
 Please ensure that *configurations.py* has the correct path to the *experiments* folder or else it won't be able to find the config files.
+
+## Getting Started
+
+In order to get any of these scripts to run, you will need to place standard fMRIPrep output in the "01-data" folder. The scripts expect at least some .nii.gz (NIfTI files) that represent the fMRI images. For the masking section, pre-computed mask files are also required in .nii.gz format.
+
+You will need to modify the experiments/configurations files to point to your local machine.
+
+The folders are numbered in order that we approached the problem (suggested run order).
+
+If you get stuck, please contact us.
