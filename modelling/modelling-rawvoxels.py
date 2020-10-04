@@ -34,17 +34,18 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 
 import configurations
-configs = configurations.Config('sub-xxx-resamp-intersected')
+configs = configurations.Config('STCM_confoundsOut_43-103slice')
 
 df = pd.read_pickle(configs.rawVoxelFile)
 
 # %% [markdown]
 # ### Normalize X
-# scaler = MinMaxScaler() 
-y = pd.DataFrame(df['sleepdep'])
+#scaler = MinMaxScaler() 
+y = np.array(df['sleepdep']).ravel()
 # y = ["WideAwake" if x == 0 else "Sleepy" for x in y['sleepdep']]
 X = pd.DataFrame(df.drop('sleepdep', axis=1))
-# X = pd.DataFrame(scaler.fit_transform(X))
+#X = pd.DataFrame(scaler.fit_transform(X))
+
 
 # %% [markdown]
 # ## Try traditional ML models
@@ -55,15 +56,15 @@ models = [
     DecisionTreeClassifier(),
     GaussianNB(),
     LinearSVC(),
-    BaggingClassifier(base_estimator=\
-        DecisionTreeClassifier(max_leaf_nodes=2620), n_estimators=100, n_jobs=-1)
+    # BaggingClassifier(base_estimator=\
+    #     DecisionTreeClassifier(max_leaf_nodes=2620), n_estimators=100, n_jobs=-1)
 ]
 model_namelist = ['Logistic Regression',
                     'KNeighbors',
                   'Decision Tree',
                   'GaussianNB', 
                   'SVM/Linear SVC',
-                  'Bagging-DT'
+                #   'Bagging-DT'
                   ]
 scoring = {'precision': make_scorer(precision_score, average='binary'), 
            'recall': make_scorer(recall_score, pos_label=1, average='binary'), 
@@ -76,8 +77,8 @@ scoring = {'precision': make_scorer(precision_score, average='binary'),
 # %%
 X_train, X_test, y_train, y_test = train_test_split(X, y, \
     test_size=0.20, random_state=0)
-X_train = pd.DataFrame(scaler.fit_transform(X_train))
-X_test = pd.DataFrame(scaler.fit_transform(X_test))
+# X_train = pd.DataFrame(scaler.fit_transform(X_train))
+# X_test = pd.DataFrame(scaler.fit_transform(X_test))
 
 # %%
 # ### Loop cross validation through various models and generate results\
@@ -99,9 +100,7 @@ for mod in models:
     i += 1
 cv_results_df = pd.DataFrame(cv_result_entries)
 cv_results_df.columns = ['algo', 'cv fold', 'metric', 'value']
-
-# %%
-cv_results_df.to_csv('rawVoxels_cv_results_df.csv')
+cv_results_df.to_csv('rawvoxels_cv_results_df.csv')
 
 # %% [markdown]
 # ### Plot cv results
@@ -125,7 +124,7 @@ for metric_name, metric in zip(['fit_time',
     plt.ylabel(f'{metric}', fontsize=12)
     plt.xticks([0, 1, 2, 3, 4])
     plt.xticks(rotation=45)
-    plt.show()
+    ## plt.show()
     plt.savefig(configs.saveDir + 'rawVoxels_cv_results.png')
 
 
@@ -140,7 +139,7 @@ for metric_name, metric in zip(['fit_time',
 #     plt.title('Learning Curve for ' + model_namelist[i], fontsize=14)
 #     plt.xlabel('Training Set Size (%)', fontsize=12)
 #     plt.ylabel('Misclassification Error', fontsize=12)
-#     plt.show()
+#     # plt.show()
 #     i += 1
 
 # %% [markdown]
@@ -175,8 +174,8 @@ plt.title('Fit Time Model Comparison', fontsize=title_fontsize_num)
 plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Fit Time score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
-plt.show()
-plt.savefig(configs.saveDir + 'rawVoxels_fit_time.png')
+# plt.show()
+plt.savefig(configs.saveDir +'fit_time.png')
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_score_time)
@@ -185,7 +184,7 @@ plt.title('Score Time Model Comparison', fontsize=title_fontsize_num)
 plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Score Time score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
-plt.show()
+# plt.show()
 plt.savefig(configs.saveDir + 'rawVoxels_score_time.png')
 
 plt.figure(figsize=fig_size_tuple)
@@ -195,7 +194,7 @@ plt.title('Accuracy Model Comparison', fontsize=title_fontsize_num)
 plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Accuracy score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
-plt.show()
+# plt.show()
 plt.savefig(configs.saveDir + 'rawVoxels_accuracy.png')
 
 plt.figure(figsize=fig_size_tuple)
@@ -205,8 +204,8 @@ plt.title('F1 Score Model Comparison', fontsize=title_fontsize_num)
 plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('F1 score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
-plt.show()
-plt.savefig(configs.saveDir + 'rawVoxels_f1_score.png')
+# plt.show()
+plt.savefig(configs.saveDir + 'rawVoxels_f1.png')
 
 # plt.figure(figsize=fig_size_tuple)
 # sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_f2)
@@ -215,7 +214,7 @@ plt.savefig(configs.saveDir + 'rawVoxels_f1_score.png')
 # plt.xlabel('Model Name', fontsize=label_fontsize_num)
 # plt.ylabel('F2 score', fontsize=label_fontsize_num)
 # plt.xticks(rotation=45)
-# plt.show()
+# # plt.show()
 
 plt.figure(figsize=fig_size_tuple)
 sns.boxplot(x='model_name', y='metric_score', data = df_cv_results_precision)
@@ -224,7 +223,7 @@ plt.title('Precision Model Comparison', fontsize=title_fontsize_num)
 plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Precision score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
-plt.show()
+# plt.show()
 plt.savefig(configs.saveDir + 'rawVoxels_precision.png')
 
 plt.figure(figsize=fig_size_tuple)
@@ -234,7 +233,7 @@ plt.title('Recall Model Comparison', fontsize=title_fontsize_num)
 plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('Recall score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
-plt.show()
+# plt.show()
 plt.savefig(configs.saveDir + 'rawVoxels_recall.png')
 
 plt.figure(figsize=fig_size_tuple)
@@ -244,7 +243,7 @@ plt.title('ROC-AUC Score Model Comparison', fontsize=title_fontsize_num)
 plt.xlabel('Model Name', fontsize=label_fontsize_num)
 plt.ylabel('ROC-AUC score', fontsize=label_fontsize_num)
 plt.xticks(rotation=45)
-plt.show()
+# plt.show()
 plt.savefig(configs.saveDir + 'rawVoxels_roc-auc.png')
 
 # %% [markdown]
@@ -259,7 +258,7 @@ for _ in models:
     cm_df.columns.name = 'Predicted'
     plt.title('Confusion Matrix for ' + model_namelist[i], fontsize=14)
     sns.heatmap(cm_df, annot=True, fmt='.6g', annot_kws={"size": 10}, cmap='Reds')
-    plt.show()
+    # plt.show()
     plt.savefig(configs.saveDir + 'rawVoxels_confusion_matrix.png')
     i += 1
 

@@ -18,7 +18,7 @@ from joblib import Parallel, delayed
 # %% [markdown]
 # ## Load configs (all patterns/files/folderpaths)
 import configurations
-configs = configurations.Config('SFCM_confoundsOut_20-100slice')
+configs = configurations.Config('testSet')
 
 # %% [markdown]
 # ## Function to find all the regressor file paths

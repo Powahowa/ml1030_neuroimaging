@@ -1,0 +1,147 @@
+2020-09-11 20:07:16.408167: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2020-09-11 20:07:16.449395: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2499860000 Hz
+2020-09-11 20:07:16.453910: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x558e58f7fc60 executing computations on platform Host. Devices:
+2020-09-11 20:07:16.453938: I tensorflow/compiler/xla/service/service.cc:175]   StreamExecutor device (0): Host, Default Version
+2020-09-11 20:07:22.472030: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 20:14:05.126386: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 20:19:30.901778: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 20:25:39.057784: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 20:31:05.951688: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 20:37:06.601321: W tensorflow/python/util/util.cc:299] Sets are not currently considered sequences, but this may change in the future, so consider avoiding using them.
+WARNING:tensorflow:From /quarantine/PYTHON/anaconda3/envs/py36/lib/python3.6/site-packages/tensorflow_core/python/ops/resource_variable_ops.py:1781: calling BaseResourceVariable.__init__ (from tensorflow.python.ops.resource_variable_ops) with constraint is deprecated and will be removed in a future version.
+Instructions for updating:
+If using Keras pass *_constraint arguments to layers.
+TF GPU list: []
+TF GPU Build test: False
+
+Epoch 00001: val_loss improved from inf to 0.76770, saving model to ./CNNv2/best_0.h5
+
+Epoch 00002: val_loss improved from 0.76770 to 0.68282, saving model to ./CNNv2/best_0.h5
+
+Epoch 00003: val_loss did not improve from 0.68282
+
+Epoch 00004: val_loss did not improve from 0.68282
+
+Epoch 00005: val_loss did not improve from 0.68282
+
+Epoch 00006: val_loss did not improve from 0.68282
+
+Epoch 00007: val_loss did not improve from 0.68282
+
+Epoch 00008: val_loss did not improve from 0.68282
+
+Epoch 00009: val_loss did not improve from 0.68282
+
+Epoch 00010: val_loss did not improve from 0.68282
+
+Epoch 00011: val_loss did not improve from 0.68282
+
+Epoch 00012: val_loss did not improve from 0.68282
+Fold: 0
+Train Loss: 0.0009152631307072684 | Accuracy: 1.0
+Val Loss: 0.864263179861469 | Accuracy: 0.5432098507881165
+
+Epoch 00001: val_loss improved from inf to 0.73581, saving model to ./CNNv2/best_1.h5
+
+Epoch 00002: val_loss did not improve from 0.73581
+
+Epoch 00003: val_loss did not improve from 0.73581
+
+Epoch 00004: val_loss did not improve from 0.73581
+
+Epoch 00005: val_loss did not improve from 0.73581
+
+Epoch 00006: val_loss did not improve from 0.73581
+
+Epoch 00007: val_loss did not improve from 0.73581
+
+Epoch 00008: val_loss did not improve from 0.73581
+
+Epoch 00009: val_loss did not improve from 0.73581
+
+Epoch 00010: val_loss did not improve from 0.73581
+
+Epoch 00011: val_loss did not improve from 0.73581
+Fold: 1
+Train Loss: 0.0008528393842121327 | Accuracy: 1.0
+Val Loss: 0.964899875499584 | Accuracy: 0.5061728358268738
+
+Epoch 00001: val_loss improved from inf to 0.71135, saving model to ./CNNv2/best_2.h5
+
+Epoch 00002: val_loss did not improve from 0.71135
+
+Epoch 00003: val_loss did not improve from 0.71135
+
+Epoch 00004: val_loss did not improve from 0.71135
+
+Epoch 00005: val_loss did not improve from 0.71135
+
+Epoch 00006: val_loss did not improve from 0.71135
+
+Epoch 00007: val_loss did not improve from 0.71135
+
+Epoch 00008: val_loss did not improve from 0.71135
+
+Epoch 00009: val_loss did not improve from 0.71135
+
+Epoch 00010: val_loss did not improve from 0.71135
+
+Epoch 00011: val_loss did not improve from 0.71135
+Fold: 2
+Train Loss: 0.00038138570344355247 | Accuracy: 1.0
+Val Loss: 0.8992507001500071 | Accuracy: 0.4938271641731262
+
+Epoch 00001: val_loss improved from inf to 0.70934, saving model to ./CNNv2/best_3.h5
+
+Epoch 00002: val_loss did not improve from 0.70934
+
+Epoch 00003: val_loss did not improve from 0.70934
+
+Epoch 00004: val_loss did not improve from 0.70934
+
+Epoch 00005: val_loss did not improve from 0.70934
+
+Epoch 00006: val_loss did not improve from 0.70934
+
+Epoch 00007: val_loss did not improve from 0.70934
+
+Epoch 00008: val_loss did not improve from 0.70934
+
+Epoch 00009: val_loss did not improve from 0.70934
+
+Epoch 00010: val_loss did not improve from 0.70934
+
+Epoch 00011: val_loss did not improve from 0.70934
+Fold: 3
+Train Loss: 0.0003889808534728032 | Accuracy: 1.0
+Val Loss: 0.9992888272734162 | Accuracy: 0.5279502868652344
+
+Epoch 00001: val_loss improved from inf to 0.70539, saving model to ./CNNv2/best_4.h5
+
+Epoch 00002: val_loss did not improve from 0.70539
+
+Epoch 00003: val_loss did not improve from 0.70539
+
+Epoch 00004: val_loss did not improve from 0.70539
+
+Epoch 00005: val_loss did not improve from 0.70539
+
+Epoch 00006: val_loss did not improve from 0.70539
+
+Epoch 00007: val_loss did not improve from 0.70539
+
+Epoch 00008: val_loss did not improve from 0.70539
+
+Epoch 00009: val_loss did not improve from 0.70539
+
+Epoch 00010: val_loss did not improve from 0.70539
+
+Epoch 00011: val_loss did not improve from 0.70539
+Fold: 4
+Train Loss: 0.0007912213836726049 | Accuracy: 1.0
+Val Loss: 0.8912917627310901 | Accuracy: 0.5155279636383057
+===============================================
+FINISHED!
+Number of Epochs per fold: 100
+Average Train 10 Folds Accuracy: 1.0
+Average Val 10 Folds Accuracy: 0.5173376202583313

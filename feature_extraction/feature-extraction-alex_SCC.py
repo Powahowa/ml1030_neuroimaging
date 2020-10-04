@@ -23,7 +23,7 @@ import re
 # %% [markdown]
 # ## Load configs (all patterns/files/folderpaths)
 import configurations
-configs = configurations.Config('patrickTest')
+configs = configurations.Config('STCM_confoundsOut_43-103slice')
 
 # %% [markdown]
 # ## Function to find all the regressor file paths
@@ -219,13 +219,12 @@ time_series_numpy_array = np.asarray(time_series_list)
 time_series_df = pd.DataFrame(time_series_numpy_array, columns=['time_series_list'])
 time_series_df.to_pickle(configs.rawFunctionalConnectivityFile)
 
-# scores
-scores = {}
-
-# %%
 # concatenate time_series_df with important_confounds_df
 
 # %%
+
+# scores
+scores = {}
 
 def createConnectivityMeasure(train, test):
     scores[kind_of_matrix_correlation] = []

@@ -11,6 +11,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.svm import LinearSVC
 from joblib import Parallel, delayed
 from sklearn.linear_model import RidgeClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -222,7 +223,7 @@ def createConnectivityMeasure(train, test):
     classes_np_array = np.array(classes)
     
     #fit classifier
-    classifier = AdaBoostClassifier(random_state=1).fit(connectomes, classes_np_array[train])
+    classifier = BaggingClassifier(base_estimator=SVC(),random_state=1, n_estimators=24, n_jobs=-1).fit(connectomes, classes_np_array[train])
     
     predictions = classifier.predict(
         connectivity.transform(time_series_numpy_array[test]))
