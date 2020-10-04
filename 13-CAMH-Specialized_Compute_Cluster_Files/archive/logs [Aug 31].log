@@ -1,0 +1,34 @@
+2020-09-01 00:23:05,419:INFO:PyCaret Clustering Module
+2020-09-01 00:23:05,419:INFO:version 2.1.2
+2020-09-01 00:23:05,419:INFO:Initializing setup()
+2020-09-01 00:23:05,419:INFO:USI: 3955
+2020-09-01 00:23:05,419:INFO:setup(data=(20, 35433061), categorical_features=None, categorical_imputation=constant, ordinal_features=None, high_cardinality_features=None, 
+                    numeric_features=None, numeric_imputation=mean, date_features=None, ignore_features=None, normalize=False,
+                    normalize_method=zscore, transformation=False, transformation_method=yeo-johnson, handle_unknown_categorical=True, unknown_categorical_method=least_frequent, pca=False, pca_method=linear,
+                    pca_components=None, ignore_low_variance=False, combine_rare_levels=False, rare_level_threshold=0.1, bin_numeric_features=None,
+                    remove_multicollinearity=False, multicollinearity_threshold=0.9, group_features=None,
+                    group_names=None, supervised=False, supervised_target=None, n_jobs=-1, html=True, session_id=None, log_experiment=False,
+                    experiment_name=None, log_plots=False, log_profile=False, log_data=False, silent=True, verbose=True, profile=False)
+2020-09-01 00:23:05,419:INFO:Checking environment
+2020-09-01 00:23:05,420:INFO:python_version: 3.6.9
+2020-09-01 00:23:05,420:INFO:python_build: ('default', 'Jul 30 2019 19:07:31')
+2020-09-01 00:23:05,420:INFO:machine: x86_64
+2020-09-01 00:23:05,422:INFO:platform: Linux-3.10.0-1062.9.1.el7.x86_64-x86_64-with-centos-7.7.1908-Core
+2020-09-01 00:23:05,422:INFO:Memory: svmem(total=540745367552, available=527752495104, percent=2.4, used=11396104192, free=143072813056, active=52718133248, inactive=337908260864, buffers=347852800, cached=385928597504, shared=157327360, slab=3891527680)
+2020-09-01 00:23:05,423:INFO:Physical Core: 12
+2020-09-01 00:23:05,423:INFO:Logical Core: 24
+2020-09-01 00:23:05,424:INFO:Checking libraries
+2020-09-01 00:23:05,424:INFO:pd==0.25.3
+2020-09-01 00:23:05,424:INFO:numpy==1.17.4
+2020-09-01 00:23:05,424:INFO:sklearn==0.23.2
+2020-09-01 00:23:05,438:INFO:kmodes==0.10.2
+2020-09-01 00:23:12,620:INFO:mlflow==1.11.0
+2020-09-01 00:23:12,622:INFO:Checking Exceptions
+2020-09-01 00:23:15,100:INFO:Preloading libraries
+2020-09-01 00:23:21,573:INFO:Preparing display monitor
+2020-09-01 00:23:21,585:INFO:Importing libraries
+2020-09-01 00:23:21,585:INFO:Declaring global variables
+2020-09-01 00:23:21,585:INFO:Copying data for preprocessing
+2020-09-01 00:23:23,736:INFO:Declaring preprocessing parameters
+2020-09-01 00:23:23,736:INFO:Importing preprocessing module
+2020-09-01 00:23:28,257:INFO:Creating preprocessing pipeline

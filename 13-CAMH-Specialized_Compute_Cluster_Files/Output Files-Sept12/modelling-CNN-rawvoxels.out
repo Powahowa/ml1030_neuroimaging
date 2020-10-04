@@ -1,0 +1,157 @@
+2020-09-11 20:39:10.949286: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2020-09-11 20:39:10.965830: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2499845000 Hz
+2020-09-11 20:39:10.966629: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x55a7fe08d4f0 executing computations on platform Host. Devices:
+2020-09-11 20:39:10.966652: I tensorflow/compiler/xla/service/service.cc:175]   StreamExecutor device (0): Host, Default Version
+2020-09-11 20:39:15.966567: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 20:45:37.087635: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 20:51:07.478808: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 20:56:29.913878: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 21:01:36.484679: I tensorflow/core/profiler/lib/profiler_session.cc:184] Profiler session started.
+2020-09-11 21:07:01.540766: W tensorflow/python/util/util.cc:299] Sets are not currently considered sequences, but this may change in the future, so consider avoiding using them.
+WARNING:tensorflow:From /quarantine/PYTHON/anaconda3/envs/py36/lib/python3.6/site-packages/tensorflow_core/python/ops/resource_variable_ops.py:1781: calling BaseResourceVariable.__init__ (from tensorflow.python.ops.resource_variable_ops) with constraint is deprecated and will be removed in a future version.
+Instructions for updating:
+If using Keras pass *_constraint arguments to layers.
+TF GPU list: []
+TF GPU Build test: False
+
+Epoch 00001: val_loss improved from inf to 0.89259, saving model to ./CNN/best_0.h5
+
+Epoch 00002: val_loss improved from 0.89259 to 0.75426, saving model to ./CNN/best_0.h5
+
+Epoch 00003: val_loss did not improve from 0.75426
+
+Epoch 00004: val_loss improved from 0.75426 to 0.71159, saving model to ./CNN/best_0.h5
+
+Epoch 00005: val_loss did not improve from 0.71159
+
+Epoch 00006: val_loss did not improve from 0.71159
+
+Epoch 00007: val_loss did not improve from 0.71159
+
+Epoch 00008: val_loss did not improve from 0.71159
+
+Epoch 00009: val_loss did not improve from 0.71159
+
+Epoch 00010: val_loss did not improve from 0.71159
+
+Epoch 00011: val_loss did not improve from 0.71159
+
+Epoch 00012: val_loss did not improve from 0.71159
+
+Epoch 00013: val_loss did not improve from 0.71159
+
+Epoch 00014: val_loss did not improve from 0.71159
+Fold: 0
+Train Loss: 0.00022131922920075916 | Accuracy: 1.0
+Val Loss: 0.8582925373389397 | Accuracy: 0.5432098507881165
+
+Epoch 00001: val_loss improved from inf to 0.73090, saving model to ./CNN/best_1.h5
+
+Epoch 00002: val_loss improved from 0.73090 to 0.72474, saving model to ./CNN/best_1.h5
+
+Epoch 00003: val_loss did not improve from 0.72474
+
+Epoch 00004: val_loss did not improve from 0.72474
+
+Epoch 00005: val_loss did not improve from 0.72474
+
+Epoch 00006: val_loss did not improve from 0.72474
+
+Epoch 00007: val_loss did not improve from 0.72474
+
+Epoch 00008: val_loss did not improve from 0.72474
+
+Epoch 00009: val_loss did not improve from 0.72474
+
+Epoch 00010: val_loss did not improve from 0.72474
+
+Epoch 00011: val_loss did not improve from 0.72474
+
+Epoch 00012: val_loss did not improve from 0.72474
+Fold: 1
+Train Loss: 0.0004465574733466025 | Accuracy: 1.0
+Val Loss: 0.8547199445742147 | Accuracy: 0.5617284178733826
+
+Epoch 00001: val_loss improved from inf to 0.75289, saving model to ./CNN/best_2.h5
+
+Epoch 00002: val_loss improved from 0.75289 to 0.70694, saving model to ./CNN/best_2.h5
+
+Epoch 00003: val_loss did not improve from 0.70694
+
+Epoch 00004: val_loss did not improve from 0.70694
+
+Epoch 00005: val_loss did not improve from 0.70694
+
+Epoch 00006: val_loss did not improve from 0.70694
+
+Epoch 00007: val_loss did not improve from 0.70694
+
+Epoch 00008: val_loss did not improve from 0.70694
+
+Epoch 00009: val_loss did not improve from 0.70694
+
+Epoch 00010: val_loss did not improve from 0.70694
+
+Epoch 00011: val_loss did not improve from 0.70694
+
+Epoch 00012: val_loss did not improve from 0.70694
+Fold: 2
+Train Loss: 0.00023932297081158903 | Accuracy: 1.0
+Val Loss: 0.8257628951543643 | Accuracy: 0.5679012537002563
+
+Epoch 00001: val_loss improved from inf to 0.70777, saving model to ./CNN/best_3.h5
+
+Epoch 00002: val_loss did not improve from 0.70777
+
+Epoch 00003: val_loss did not improve from 0.70777
+
+Epoch 00004: val_loss did not improve from 0.70777
+
+Epoch 00005: val_loss did not improve from 0.70777
+
+Epoch 00006: val_loss did not improve from 0.70777
+
+Epoch 00007: val_loss did not improve from 0.70777
+
+Epoch 00008: val_loss did not improve from 0.70777
+
+Epoch 00009: val_loss did not improve from 0.70777
+
+Epoch 00010: val_loss did not improve from 0.70777
+
+Epoch 00011: val_loss did not improve from 0.70777
+Fold: 3
+Train Loss: 0.0005324151366229358 | Accuracy: 1.0
+Val Loss: 0.9670997450810782 | Accuracy: 0.4658385217189789
+
+Epoch 00001: val_loss improved from inf to 0.68732, saving model to ./CNN/best_4.h5
+
+Epoch 00002: val_loss improved from 0.68732 to 0.68706, saving model to ./CNN/best_4.h5
+
+Epoch 00003: val_loss did not improve from 0.68706
+
+Epoch 00004: val_loss did not improve from 0.68706
+
+Epoch 00005: val_loss did not improve from 0.68706
+
+Epoch 00006: val_loss did not improve from 0.68706
+
+Epoch 00007: val_loss did not improve from 0.68706
+
+Epoch 00008: val_loss did not improve from 0.68706
+
+Epoch 00009: val_loss did not improve from 0.68706
+
+Epoch 00010: val_loss did not improve from 0.68706
+
+Epoch 00011: val_loss did not improve from 0.68706
+
+Epoch 00012: val_loss did not improve from 0.68706
+Fold: 4
+Train Loss: 0.0006971454954601053 | Accuracy: 1.0
+Val Loss: 0.8942674627955656 | Accuracy: 0.5279502868652344
+===============================================
+FINISHED!
+Number of Epochs per fold: 100
+Average Train 10 Folds Accuracy: 1.0
+Average Val 10 Folds Accuracy: 0.5333256721496582

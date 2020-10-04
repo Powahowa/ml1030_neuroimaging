@@ -1,0 +1,4 @@
+  File "modelling-LSTM-rawvoxels.py", line 96
+    print(f"Fold: {i}")
+                     ^
+SyntaxError: invalid syntax

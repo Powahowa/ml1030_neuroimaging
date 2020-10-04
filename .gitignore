@@ -1,6 +1,11 @@
-data
+1-data/preprocessed
+1-data/removed
+1-data/CAMH Partial Dataset
+1-data/tempfaces
 data/preprocessed
 data/removed
+data/CAMH Partial Dataset
+data/tempfaces
 .vscode/settings.json
 /Tony/.vscode/settings.json
 features
