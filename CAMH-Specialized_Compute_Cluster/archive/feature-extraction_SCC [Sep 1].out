@@ -1,0 +1,23 @@
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 24 concurrent workers.
+/quarantine/PYTHON/anaconda3/envs/py36/lib/python3.6/site-packages/pandas/core/indexing.py:205: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame
+
+See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  self._setitem_with_indexer(indexer, value)
+[Parallel(n_jobs=-1)]: Done   1 tasks      | elapsed:   28.2s
+[Parallel(n_jobs=-1)]: Done   2 out of   2 | elapsed:   54.4s remaining:    0.0s
+[Parallel(n_jobs=-1)]: Done   2 out of   2 | elapsed:   54.4s finished
+Masked shape of raw voxels for file "sub-9035_ses-2_task-faces_space-MNI152NLin2009cAsym_desc-preproc_bold.nii" is: (1, 13991516)
+Pickling array (shape=(13991516, 1), dtype=float32).
+Masked shape of raw voxels for file "sub-9035_ses-2_task-arrows_space-MNI152NLin2009cAsym_desc-preproc_bold.nii" is: (1, 29981820)
+Pickling array (shape=(29981820, 1), dtype=float32).
+Traceback (most recent call last):
+  File "feature-extraction_SCC.py", line 144, in <module>
+    X = get_voxels_df(sleep_bids_comb_df, masker)
+  File "feature-extraction_SCC.py", line 133, in get_voxels_df
+    tmp_df = pd.concat(rawvoxels_list, ignore_index=True)
+  File "/quarantine/PYTHON/anaconda3/envs/py36/lib/python3.6/site-packages/pandas/core/reshape/concat.py", line 255, in concat
+    sort=sort,
+  File "/quarantine/PYTHON/anaconda3/envs/py36/lib/python3.6/site-packages/pandas/core/reshape/concat.py", line 332, in __init__
+    raise TypeError(msg)
+TypeError: cannot concatenate object of type '<class 'list'>'; only Series and DataFrame objs are valid

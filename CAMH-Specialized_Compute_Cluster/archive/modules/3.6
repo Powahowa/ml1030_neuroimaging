@@ -1,0 +1,15 @@
+#%Module1.0#####################################################################
+
+
+module-whatis "adds anaconda Python (3.6) to your user environment" 
+
+#conflict PYTHON
+
+set           prefix  /quarantine/PYTHON/anaconda3/envs/py36
+#setenv        PYTHONHOME     ${prefix}
+prepend-path  PATH      ${prefix}/bin
+#prepend-path    LD_LIBRARY_PATH ${prefix}/lib/python2.7
+#prepend-path    LD_LIBRARY_PATH ${prefix}/lib
+#prepend-path    PYTHONPATH      ${prefix}/lib/python2.7/site-packages
+#prepend-path    PYTHONPATH      ${prefix}/lib/python2.7
+

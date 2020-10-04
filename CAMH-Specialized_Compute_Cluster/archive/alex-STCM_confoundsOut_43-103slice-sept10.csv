@@ -1,0 +1,7 @@
+Dataset,Model,Kind of correlation,mean_scores,scores_std,Notes
+"Standardize = True, Confounds = Masked",LinearSVC,correlation,0.583333333,0.190758719,Train set = 5
+"Standardize = True, Confounds = Masked",LinearSVC,partial correlation,0.55,0.217944947,Train set = 5
+"Standardize = True, Confounds = Masked",LinearSVC,tangent,0.608333333,0.248187877,Train set = 5
+"Standardize = True, Confounds = Not Masked",LinearSVC,correlation,0.525,0.22220486,Train set = 5
+"Standardize = True, Confounds = Not Masked",LinearSVC,partial correlation,0.55,0.217944947,Train set = 5
+"Standardize = True, Confounds = Not Masked",LinearSVC,tangent,0.566666667,0.23570226,Train set = 5

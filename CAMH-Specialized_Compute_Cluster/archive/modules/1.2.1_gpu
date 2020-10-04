@@ -1,0 +1,16 @@
+#%Module1.0#####################################################################
+
+
+module-whatis "adds Tensorflow 1.2.1 Gpu with anaconda 4.2.0 python (3.6.0-0) to your user environment" 
+
+#conflict PYTHON
+module load PYTHON/3.6
+
+set           prefix  /quarantine/Tensorflow/Python-3.6.0/1.2.1_gpu
+#setenv        PYTHONHOME     ${prefix}
+prepend-path  PATH      ${prefix}/bin
+#prepend-path    LD_LIBRARY_PATH ${prefix}/lib/python3.6
+#prepend-path    LD_LIBRARY_PATH ${prefix}/lib
+prepend-path    PYTHONPATH      ${prefix}/lib/python3.6/site-packages
+#prepend-path    PYTHONPATH      ${prefix}/lib/python3.6
+

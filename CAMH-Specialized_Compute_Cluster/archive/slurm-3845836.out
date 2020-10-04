@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "masker_SCC.py", line 2, in <module>
+    from nilearn import plotting
+ImportError: No module named nilearn
