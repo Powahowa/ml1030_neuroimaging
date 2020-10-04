@@ -10,6 +10,7 @@ from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.metrics import accuracy_score
 from sklearn.svm import LinearSVC
 from joblib import Parallel, delayed
+from sklearn.linear_model import RidgeClassifier
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,7 +42,7 @@ from sklearn.model_selection import cross_validate
 # %% [markdown]
 # ## Load configs (all patterns/files/folderpaths)
 import configurations
-configs = configurations.Config('STCN_confoundsIn_43-103slice')
+configs = configurations.Config('STCM_confoundsOut_43-103slice_alex')
 
 # %% [markdown]
 # ## Function to find all the regressor file paths
@@ -199,12 +200,11 @@ classes = sleep_bids_comb_df['sleepdep'].tolist()
 #classes = take binary column from dataframe and make it into a list
 
 # define cross-validation strategy here
-cv = StratifiedShuffleSplit(n_splits=24, random_state=0, test_size=5)
+cv = StratifiedShuffleSplit(n_splits=12, random_state=0, test_size=0.2)
 
 #%%
 
-time_series_df = pd.read_pickle(configs.rawFunctionalConnectivityFile)
-time_series_numpy_array = time_series_df['time_series_list'].to_numpy()
+time_series_numpy_array = np.load(configs.rawFunctionalConnectivityFile, allow_pickle=True)
 
 # scores
 scores = {}
@@ -222,7 +222,7 @@ def createConnectivityMeasure(train, test):
     classes_np_array = np.array(classes)
     
     #fit classifier
-    classifier = LogisticRegression(random_state=1).fit(connectomes, classes_np_array[train])
+    classifier = AdaBoostClassifier(random_state=1).fit(connectomes, classes_np_array[train])
     
     predictions = classifier.predict(
         connectivity.transform(time_series_numpy_array[test]))

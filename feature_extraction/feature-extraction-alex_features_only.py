@@ -216,50 +216,7 @@ cv = StratifiedShuffleSplit(n_splits=24, random_state=0, test_size=5)
 time_series_numpy_array = np.asarray(time_series_list)
 
 # convert tim_series_numpy_array to Dataframe
-time_series_df = pd.DataFrame(time_series_numpy_array, columns=['time_series_list'])
-time_series_df.to_pickle(configs.rawFunctionalConnectivityFile)
+# time_series_df = pd.DataFrame(time_series_numpy_array, columns=['time_series_list'])
+# time_series_df.to_pickle(configs.rawFunctionalConnectivityFile)
 
-# concatenate time_series_df with important_confounds_df
-
-# %%
-
-# scores
-scores = {}
-
-def createConnectivityMeasure(train, test):
-    scores[kind_of_matrix_correlation] = []
-    # vectorize turns it into a 1D array
-    connectivity = ConnectivityMeasure(kind=kind_of_matrix_correlation, vectorize=True)
-    
-    #calculate vectorized connectome for training set
-    connectomes = connectivity.fit_transform(time_series_numpy_array[train])
-    #print(len(connectomes))
-    #print(len(classes[train]))
-    
-    classes_np_array = np.array(classes)
-    
-    #fit classifier
-    classifier = LinearSVC().fit(connectomes, classes_np_array[train])
-    
-    predictions = classifier.predict(
-        connectivity.transform(time_series_numpy_array[test]))
-    
-    # store the accuracy for this cross-validation fold
-    #scores[kind_of_matrix_correlation].append(accuracy_score(classes_np_array[test], predictions))
-    return accuracy_score(classes_np_array[test], predictions)
-
-for kind_of_matrix_correlation in kinds_of_matrix_correlation:
-    scores[kind_of_matrix_correlation] = []
-    score = Parallel(n_jobs=-1, verbose=50)(delayed(createConnectivityMeasure)(train, test) for train, test in cv.split(time_series_numpy_array, classes))
-    scores[kind_of_matrix_correlation].append(score)
-  
-# calculate mean accuracy scores, and their standard deviations
-mean_scores = [np.mean(scores[kind_of_matrix_correlation]) for kind_of_matrix_correlation in kinds_of_matrix_correlation]
-scores_std = [np.std(scores[kind_of_matrix_correlation]) for kind_of_matrix_correlation in kinds_of_matrix_correlation]
-
-# output results into a df
-results_df = pd.DataFrame(list(zip(kinds_of_matrix_correlation, mean_scores, scores_std)), columns = ['Kind of correlation', 'mean_scores', 'scores_std'])
-
-# print results of df to a csv
-results_df.to_csv('test_classification_of_functional_connectivity_between_roi_results.csv')
-# %%
+np.save('time_series_numpy_array.npy', time_series_numpy_array, allow_pickle=True)

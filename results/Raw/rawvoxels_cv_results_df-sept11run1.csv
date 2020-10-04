@@ -1,0 +1,176 @@
+,algo,cv fold,metric,value
+0,Logistic Regression,0,fit_time,399.8321523666382
+1,Logistic Regression,1,fit_time,343.7316815853119
+2,Logistic Regression,2,fit_time,413.66347455978394
+3,Logistic Regression,3,fit_time,428.55227494239807
+4,Logistic Regression,4,fit_time,440.7257630825043
+5,Logistic Regression,0,score_time,34.76925301551819
+6,Logistic Regression,1,score_time,35.300801038742065
+7,Logistic Regression,2,score_time,34.773515939712524
+8,Logistic Regression,3,score_time,30.8046395778656
+9,Logistic Regression,4,score_time,30.662240982055664
+10,Logistic Regression,0,test_precision,0.5181818181818182
+11,Logistic Regression,1,test_precision,0.51
+12,Logistic Regression,2,test_precision,0.4948453608247423
+13,Logistic Regression,3,test_precision,0.5
+14,Logistic Regression,4,test_precision,0.5370370370370371
+15,Logistic Regression,0,test_recall,0.8507462686567164
+16,Logistic Regression,1,test_recall,0.7611940298507462
+17,Logistic Regression,2,test_recall,0.7164179104477612
+18,Logistic Regression,3,test_recall,0.7272727272727273
+19,Logistic Regression,4,test_recall,0.8787878787878788
+20,Logistic Regression,0,test_accuracy,0.5153846153846153
+21,Logistic Regression,1,test_accuracy,0.49612403100775193
+22,Logistic Regression,2,test_accuracy,0.4728682170542636
+23,Logistic Regression,3,test_accuracy,0.4883720930232558
+24,Logistic Regression,4,test_accuracy,0.5503875968992248
+25,Logistic Regression,0,test_f1,0.6440677966101696
+26,Logistic Regression,1,test_f1,0.6107784431137725
+27,Logistic Regression,2,test_f1,0.5853658536585367
+28,Logistic Regression,3,test_f1,0.5925925925925926
+29,Logistic Regression,4,test_f1,0.6666666666666667
+30,Logistic Regression,0,test_roc_auc,0.5047382136934375
+31,Logistic Regression,1,test_roc_auc,0.4854357246027925
+32,Logistic Regression,2,test_roc_auc,0.46304766490129995
+33,Logistic Regression,3,test_roc_auc,0.4826839826839827
+34,Logistic Regression,4,test_roc_auc,0.5425685425685426
+35,KNeighbors,0,fit_time,271.7078790664673
+36,KNeighbors,1,fit_time,262.8716335296631
+37,KNeighbors,2,fit_time,266.39919447898865
+38,KNeighbors,3,fit_time,260.83050632476807
+39,KNeighbors,4,fit_time,268.60516715049744
+40,KNeighbors,0,score_time,333.5574789047241
+41,KNeighbors,1,score_time,337.99118208885193
+42,KNeighbors,2,score_time,336.68006896972656
+43,KNeighbors,3,score_time,336.4771418571472
+44,KNeighbors,4,score_time,329.77947211265564
+45,KNeighbors,0,test_precision,0.5
+46,KNeighbors,1,test_precision,0.5193798449612403
+47,KNeighbors,2,test_precision,0.5193798449612403
+48,KNeighbors,3,test_precision,0.5714285714285714
+49,KNeighbors,4,test_precision,0.6363636363636364
+50,KNeighbors,0,test_recall,0.04477611940298507
+51,KNeighbors,1,test_recall,1.0
+52,KNeighbors,2,test_recall,1.0
+53,KNeighbors,3,test_recall,0.06060606060606061
+54,KNeighbors,4,test_recall,0.10606060606060606
+55,KNeighbors,0,test_accuracy,0.4846153846153846
+56,KNeighbors,1,test_accuracy,0.5193798449612403
+57,KNeighbors,2,test_accuracy,0.5193798449612403
+58,KNeighbors,3,test_accuracy,0.49612403100775193
+59,KNeighbors,4,test_accuracy,0.5116279069767442
+60,KNeighbors,0,test_f1,0.0821917808219178
+61,KNeighbors,1,test_f1,0.6836734693877551
+62,KNeighbors,2,test_f1,0.6836734693877551
+63,KNeighbors,3,test_f1,0.10958904109589043
+64,KNeighbors,4,test_f1,0.18181818181818182
+65,KNeighbors,0,test_roc_auc,0.4985785358919687
+66,KNeighbors,1,test_roc_auc,0.5
+67,KNeighbors,2,test_roc_auc,0.5
+68,KNeighbors,3,test_roc_auc,0.5064935064935064
+69,KNeighbors,4,test_roc_auc,0.5212842712842712
+70,Decision Tree,0,fit_time,1577.7860436439514
+71,Decision Tree,1,fit_time,1481.295651435852
+72,Decision Tree,2,fit_time,1626.1610081195831
+73,Decision Tree,3,fit_time,1596.583946466446
+74,Decision Tree,4,fit_time,1554.5435967445374
+75,Decision Tree,0,score_time,42.3087899684906
+76,Decision Tree,1,score_time,31.889596700668335
+77,Decision Tree,2,score_time,31.33698034286499
+78,Decision Tree,3,score_time,31.0881507396698
+79,Decision Tree,4,score_time,32.61779761314392
+80,Decision Tree,0,test_precision,0.4642857142857143
+81,Decision Tree,1,test_precision,0.559322033898305
+82,Decision Tree,2,test_precision,0.5072463768115942
+83,Decision Tree,3,test_precision,0.5294117647058824
+84,Decision Tree,4,test_precision,0.5866666666666667
+85,Decision Tree,0,test_recall,0.3880597014925373
+86,Decision Tree,1,test_recall,0.4925373134328358
+87,Decision Tree,2,test_recall,0.5223880597014925
+88,Decision Tree,3,test_recall,0.5454545454545454
+89,Decision Tree,4,test_recall,0.6666666666666666
+90,Decision Tree,0,test_accuracy,0.45384615384615384
+91,Decision Tree,1,test_accuracy,0.5348837209302325
+92,Decision Tree,2,test_accuracy,0.4883720930232558
+93,Decision Tree,3,test_accuracy,0.5193798449612403
+94,Decision Tree,4,test_accuracy,0.5891472868217055
+95,Decision Tree,0,test_f1,0.42276422764227645
+96,Decision Tree,1,test_f1,0.5238095238095237
+97,Decision Tree,2,test_f1,0.5147058823529412
+98,Decision Tree,3,test_f1,0.5373134328358209
+99,Decision Tree,4,test_f1,0.6241134751773049
+100,Decision Tree,0,test_roc_auc,0.4559346126510306
+101,Decision Tree,1,test_roc_auc,0.5365912373615791
+102,Decision Tree,2,test_roc_auc,0.4870004814636495
+103,Decision Tree,3,test_roc_auc,0.5187590187590188
+104,Decision Tree,4,test_roc_auc,0.5873015873015872
+105,GaussianNB,0,fit_time,135.3622510433197
+106,GaussianNB,1,fit_time,144.35735654830933
+107,GaussianNB,2,fit_time,144.60472440719604
+108,GaussianNB,3,fit_time,128.9365575313568
+109,GaussianNB,4,fit_time,151.42376518249512
+110,GaussianNB,0,score_time,45.300593852996826
+111,GaussianNB,1,score_time,45.4553108215332
+112,GaussianNB,2,score_time,48.03129577636719
+113,GaussianNB,3,score_time,45.49559020996094
+114,GaussianNB,4,score_time,51.0953106880188
+115,GaussianNB,0,test_precision,0.5277777777777778
+116,GaussianNB,1,test_precision,0.5252525252525253
+117,GaussianNB,2,test_precision,0.5048543689320388
+118,GaussianNB,3,test_precision,0.4791666666666667
+119,GaussianNB,4,test_precision,0.5192307692307693
+120,GaussianNB,0,test_recall,0.8507462686567164
+121,GaussianNB,1,test_recall,0.7761194029850746
+122,GaussianNB,2,test_recall,0.7761194029850746
+123,GaussianNB,3,test_recall,0.696969696969697
+124,GaussianNB,4,test_recall,0.8181818181818182
+125,GaussianNB,0,test_accuracy,0.5307692307692308
+126,GaussianNB,1,test_accuracy,0.5193798449612403
+127,GaussianNB,2,test_accuracy,0.4883720930232558
+128,GaussianNB,3,test_accuracy,0.4573643410852713
+129,GaussianNB,4,test_accuracy,0.5193798449612403
+130,GaussianNB,0,test_f1,0.6514285714285716
+131,GaussianNB,1,test_f1,0.6265060240963856
+132,GaussianNB,2,test_f1,0.611764705882353
+133,GaussianNB,3,test_f1,0.5679012345679013
+134,GaussianNB,4,test_f1,0.6352941176470589
+135,GaussianNB,0,test_roc_auc,0.5206112295664534
+136,GaussianNB,1,test_roc_auc,0.5090274434280212
+137,GaussianNB,2,test_roc_auc,0.47676937891189214
+138,GaussianNB,3,test_roc_auc,0.4516594516594517
+139,GaussianNB,4,test_roc_auc,0.5122655122655123
+140,SVM/Linear SVC,0,fit_time,102.47036385536194
+141,SVM/Linear SVC,1,fit_time,105.29723906517029
+142,SVM/Linear SVC,2,fit_time,97.36532258987427
+143,SVM/Linear SVC,3,fit_time,106.33086585998535
+144,SVM/Linear SVC,4,fit_time,103.76587295532227
+145,SVM/Linear SVC,0,score_time,0.0
+146,SVM/Linear SVC,1,score_time,0.0
+147,SVM/Linear SVC,2,score_time,0.0
+148,SVM/Linear SVC,3,score_time,0.0
+149,SVM/Linear SVC,4,score_time,0.0
+150,SVM/Linear SVC,0,test_precision,
+151,SVM/Linear SVC,1,test_precision,
+152,SVM/Linear SVC,2,test_precision,
+153,SVM/Linear SVC,3,test_precision,
+154,SVM/Linear SVC,4,test_precision,
+155,SVM/Linear SVC,0,test_recall,
+156,SVM/Linear SVC,1,test_recall,
+157,SVM/Linear SVC,2,test_recall,
+158,SVM/Linear SVC,3,test_recall,
+159,SVM/Linear SVC,4,test_recall,
+160,SVM/Linear SVC,0,test_accuracy,
+161,SVM/Linear SVC,1,test_accuracy,
+162,SVM/Linear SVC,2,test_accuracy,
+163,SVM/Linear SVC,3,test_accuracy,
+164,SVM/Linear SVC,4,test_accuracy,
+165,SVM/Linear SVC,0,test_f1,
+166,SVM/Linear SVC,1,test_f1,
+167,SVM/Linear SVC,2,test_f1,
+168,SVM/Linear SVC,3,test_f1,
+169,SVM/Linear SVC,4,test_f1,
+170,SVM/Linear SVC,0,test_roc_auc,
+171,SVM/Linear SVC,1,test_roc_auc,
+172,SVM/Linear SVC,2,test_roc_auc,
+173,SVM/Linear SVC,3,test_roc_auc,
+174,SVM/Linear SVC,4,test_roc_auc,

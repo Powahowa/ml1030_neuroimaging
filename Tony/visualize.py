@@ -51,9 +51,9 @@ while i < 100:
     sessionDir + 
     "func/sub-9001_ses-1_task-faces_space-T1w_desc-preproc_bold.nii.gz", i)
 
-    # plt = plotting.plot_img(nonnormalized_image, cut_coords=[0,0,0])
-    # plt.savefig('./plots/series-nonnonmalized/' + str(i) + '.png')
-    # plt.close()
+    plt = plotting.plot_img(nonnormalized_image, cut_coords=[0,0,0])
+    plt.savefig('./plots/series-nonnonmalized/' + str(i) + '.png')
+    plt.close()
     i += 1
     #i += 20
 
